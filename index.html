@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>二營健康管理中心</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+</head>
+<body>
+<header>
+  <h1>二營健康管理中心</h1>
+  <div id="marquee">健康標語載入中...</div>
+</header>
+<main>
+  <button class="primary" onclick="window.open('https://forms.gle/cr3efubbA1WoArfp6','_blank')">BMI 回報</button>
+  <button id="menuBtn" class="secondary">今日減脂菜單</button>
+</main>
+<div id="menuModal" class="modal">
+  <div class="modal-content">
+    <span id="closeModal" class="close">&times;</span>
+    <h2>今日減脂菜單</h2>
+    <ul id="menuList"></ul>
+  </div>
+</div>
+<footer>
+  <p>&copy; 2025 二營健康管理中心</p>
+</footer>
+<script src="./assets/script.js"></script>
+</body>
+</html>
