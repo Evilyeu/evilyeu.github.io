@@ -31,7 +31,9 @@
     }
     main { text-align:center; padding:2rem; }
     button {
-      margin:1rem; padding:1rem 2rem; font-size:1rem;
+      display:block;
+      width:260px;
+      margin:1rem auto; padding:1rem; font-size:1rem;
       border:none; border-radius:12px; cursor:pointer;
       backdrop-filter: blur(6px);
     }
@@ -47,13 +49,17 @@
       width:100%; height:100%; overflow:auto;
       background:rgba(0,0,0,0.6); }
     .modal-content {
-      background:rgba(255,255,255,0.85);
+      background:rgba(255,255,255,0.95);
       backdrop-filter: blur(15px);
-      margin:10% auto; padding:20px;
+      margin:5% auto; padding:20px;
       border-radius:12px; width:90%; max-width:500px;
     }
     .close { color:#333; float:right; font-size:28px; font-weight:bold; cursor:pointer; }
     .close:hover { color:#000; }
+    form input, form textarea {
+      width:95%; padding:8px; margin:6px 0; border-radius:6px; border:1px solid #ccc;
+    }
+    form button { width:100%; margin-top:10px; }
   </style>
 </head>
 <body>
@@ -63,15 +69,38 @@
 </header>
 <main>
   <button class="primary" onclick="window.open('https://forms.gle/cr3efubbA1WoArfp6','_blank')">BMI 回報</button>
+  <button id="reportBtn" class="secondary">回診狀況回報</button>
   <button id="menuBtn" class="secondary">今日減脂菜單</button>
 </main>
+
+<!-- 減脂菜單 Modal -->
 <div id="menuModal" class="modal">
   <div class="modal-content">
-    <span id="closeModal" class="close">&times;</span>
+    <span id="closeMenu" class="close">&times;</span>
     <h2>今日減脂菜單</h2>
     <ul id="menuList"></ul>
+    <p id="calories"></p>
   </div>
 </div>
+
+<!-- 回診狀況回報 Modal -->
+<div id="reportModal" class="modal">
+  <div class="modal-content">
+    <span id="closeReport" class="close">&times;</span>
+    <h2>回診狀況回報</h2>
+    <form id="reportForm">
+      <input type="text" name="name" placeholder="姓名" required><br>
+      <input type="text" name="unit" placeholder="單位" required><br>
+      <input type="date" name="date" required><br>
+      <input type="text" name="hospital" placeholder="回診醫院" required><br>
+      <input type="text" name="doctor" placeholder="醫師姓名" required><br>
+      <textarea name="note" placeholder="回診狀況描述"></textarea><br>
+      <button type="submit">送出</button>
+    </form>
+    <p id="reportMsg"></p>
+  </div>
+</div>
+
 <footer>
   <p>&copy; 2025 二營健康管理中心</p>
 </footer>
@@ -89,31 +118,90 @@ const slogans = [
   "每週至少運動150分鐘",
   "少油少鹽少糖，多蔬果高纖維"
 ];
-const marquee = document.getElementById('marquee');
-if (marquee) { marquee.textContent = slogans[Math.floor(Math.random()*slogans.length)]; }
+document.getElementById('marquee').textContent = slogans[Math.floor(Math.random()*slogans.length)];
 
-// 每日菜單 (星期日=0)
+// 每日菜單 (含熱量)
 const menus = [
-  ["早餐：燕麥＋水煮蛋＋無糖豆漿", "午餐：雞胸肉＋糙米＋燙青菜", "晚餐：蔬菜湯＋豆腐＋水果"],
-  ["早餐：全麥吐司＋低脂牛奶", "午餐：鮭魚＋糙米＋青花菜", "晚餐：蒸蛋＋炒菠菜＋水果"],
-  ["早餐：無糖優格＋堅果＋水果", "午餐：雞腿排＋糙米＋時蔬", "晚餐：豆漿＋沙拉"],
-  ["早餐：水煮蛋＋燕麥粥", "午餐：牛肉片＋地瓜＋青菜", "晚餐：味噌湯＋豆腐＋水果"],
-  ["早餐：全麥饅頭＋豆漿", "午餐：雞胸肉＋糙米＋燙青菜", "晚餐：蔬菜湯＋雞蛋＋水果"],
-  ["早餐：水煮蛋＋黑咖啡＋水果", "午餐：鮭魚＋地瓜＋青菜", "晚餐：豆漿＋炒青菜"],
-  ["早餐：燕麥片＋堅果＋牛奶", "午餐：雞胸肉＋糙米＋燙青菜", "晚餐：蔬菜湯＋豆腐＋水果"]
+  [
+    {meal:"早餐：燕麥＋水煮蛋＋無糖豆漿", kcal:350},
+    {meal:"午餐：雞胸肉＋糙米＋燙青菜", kcal:500},
+    {meal:"晚餐：蔬菜湯＋豆腐＋水果", kcal:300}
+  ],
+  [
+    {meal:"早餐：全麥吐司＋低脂牛奶", kcal:300},
+    {meal:"午餐：鮭魚＋糙米＋青花菜", kcal:550},
+    {meal:"晚餐：蒸蛋＋炒菠菜＋水果", kcal:320}
+  ],
+  [
+    {meal:"早餐：無糖優格＋堅果＋水果", kcal:280},
+    {meal:"午餐：雞腿排＋糙米＋時蔬", kcal:520},
+    {meal:"晚餐：豆漿＋沙拉", kcal:250}
+  ],
+  [
+    {meal:"早餐：水煮蛋＋燕麥粥", kcal:330},
+    {meal:"午餐：牛肉片＋地瓜＋青菜", kcal:560},
+    {meal:"晚餐：味噌湯＋豆腐＋水果", kcal:310}
+  ],
+  [
+    {meal:"早餐：全麥饅頭＋豆漿", kcal:340},
+    {meal:"午餐：雞胸肉＋糙米＋燙青菜", kcal:500},
+    {meal:"晚餐：蔬菜湯＋雞蛋＋水果", kcal:280}
+  ],
+  [
+    {meal:"早餐：水煮蛋＋黑咖啡＋水果", kcal:260},
+    {meal:"午餐：鮭魚＋地瓜＋青菜", kcal:540},
+    {meal:"晚餐：豆漿＋炒青菜", kcal:270}
+  ],
+  [
+    {meal:"早餐：燕麥片＋堅果＋牛奶", kcal:360},
+    {meal:"午餐：雞胸肉＋糙米＋燙青菜", kcal:500},
+    {meal:"晚餐：蔬菜湯＋豆腐＋水果", kcal:310}
+  ]
 ];
-const day = new Date().getDay();
-const menuToday = menus[day];
-const menuList = document.getElementById("menuList");
-if (menuList) { menuList.innerHTML = menuToday.map(i => `<li>${i}</li>`).join(""); }
+const todayMenu = menus[new Date().getDay()];
+document.getElementById("menuList").innerHTML = todayMenu.map(i => `<li>${i.meal} (${i.kcal} kcal)</li>`).join("");
+document.getElementById("calories").textContent = "每日總熱量：約 " + todayMenu.reduce((a,b)=>a+b.kcal,0) + " kcal";
 
 // Modal 控制
-const modal = document.getElementById("menuModal");
-const btn = document.getElementById("menuBtn");
-const span = document.getElementById("closeModal");
-if (btn) { btn.onclick = () => { modal.style.display = "block"; } }
-if (span) { span.onclick = () => { modal.style.display = "none"; } }
-window.onclick = (event) => { if(event.target == modal){ modal.style.display="none"; } }
+function setupModal(btnId, modalId, closeId) {
+  const btn = document.getElementById(btnId);
+  const modal = document.getElementById(modalId);
+  const span = document.getElementById(closeId);
+  btn.onclick = () => { modal.style.display = "block"; }
+  span.onclick = () => { modal.style.display = "none"; }
+  window.addEventListener("click", e => { if (e.target==modal) modal.style.display="none"; });
+}
+setupModal("menuBtn","menuModal","closeMenu");
+setupModal("reportBtn","reportModal","closeReport");
+
+// Report Form Submit (no file upload)
+document.getElementById("reportForm").onsubmit = async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById("reportMsg");
+  msg.textContent = "上傳中...";
+
+  const formData = new FormData(e.target);
+  const data = {
+    name: formData.get("name"),
+    unit: formData.get("unit"),
+    date: formData.get("date"),
+    hospital: formData.get("hospital"),
+    doctor: formData.get("doctor"),
+    note: formData.get("note")
+  };
+
+  try {
+    const response = await fetch("YOUR_GAS_URL_HERE", {
+      method:"POST",
+      body: JSON.stringify(data),
+      headers: {"Content-Type":"application/json"}
+    });
+    const result = await response.json();
+    msg.textContent = result.message;
+  } catch(err) {
+    msg.textContent = "上傳失敗：" + err;
+  }
+};
 </script>
 </body>
 </html>
