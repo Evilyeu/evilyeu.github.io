@@ -191,7 +191,7 @@ document.getElementById("reportForm").onsubmit = async (e) => {
   };
 
   try {
-    const response = await fetch("YOUR_GAS_URL_HERE", {
+    const response = await fetch("https://script.google.com/macros/s/AKfycbyOK8JPVH0-stzBpBg-iaPaD6RBLqLPzyZ0wJu0ZogUNzHv5gwI3bF0rgT5VLwkbwa1/exec", {
       method:"POST",
       body: JSON.stringify(data),
       headers: {"Content-Type":"application/json"}
