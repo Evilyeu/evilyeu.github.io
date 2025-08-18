@@ -30,6 +30,13 @@
       100% { transform:translateX(-100%); }
     }
     main { text-align:center; padding:2rem; }
+    #bulletin {
+      max-width:400px; margin:0 auto 2rem auto; padding:1rem;
+      background:rgba(255,255,255,0.5);
+      border-radius:12px; backdrop-filter:blur(10px);
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    }
+    #bulletin h2 { margin-top:0; }
     button {
       display:block;
       width:260px;
@@ -56,10 +63,6 @@
     }
     .close { color:#333; float:right; font-size:28px; font-weight:bold; cursor:pointer; }
     .close:hover { color:#000; }
-    form input, form textarea {
-      width:95%; padding:8px; margin:6px 0; border-radius:6px; border:1px solid #ccc;
-    }
-    form button { width:100%; margin-top:10px; }
   </style>
 </head>
 <body>
@@ -68,8 +71,14 @@
   <div id="marquee">健康標語載入中...</div>
 </header>
 <main>
+  <div id="bulletin">
+    <h2>今日值班人員</h2>
+    <p>張上士　0912-345-678<br>
+       李中士　0922-111-222</p>
+    <small>值班時間：114年08月13日 ～ 114年08月20日</small>
+  </div>
+
   <button class="primary" onclick="window.open('https://forms.gle/cr3efubbA1WoArfp6','_blank')">BMI 回報</button>
-  <button id="reportBtn" class="secondary">回診狀況回報</button>
   <button id="menuBtn" class="secondary">今日減脂菜單</button>
 </main>
 
@@ -83,26 +92,8 @@
   </div>
 </div>
 
-<!-- 回診狀況回報 Modal -->
-<div id="reportModal" class="modal">
-  <div class="modal-content">
-    <span id="closeReport" class="close">&times;</span>
-    <h2>回診狀況回報</h2>
-    <form id="reportForm">
-      <input type="text" name="name" placeholder="姓名" required><br>
-      <input type="text" name="unit" placeholder="單位" required><br>
-      <input type="date" name="date" required><br>
-      <input type="text" name="hospital" placeholder="回診醫院" required><br>
-      <input type="text" name="doctor" placeholder="醫師姓名" required><br>
-      <textarea name="note" placeholder="回診狀況描述"></textarea><br>
-      <button type="submit">送出</button>
-    </form>
-    <p id="reportMsg"></p>
-  </div>
-</div>
-
 <footer>
-  <p>&copy; 2025 二營健康管理中心</p>
+  <p>&copy; 114 二營健康管理中心</p>
 </footer>
 <script>
 // 健康標語池
@@ -172,36 +163,6 @@ function setupModal(btnId, modalId, closeId) {
   window.addEventListener("click", e => { if (e.target==modal) modal.style.display="none"; });
 }
 setupModal("menuBtn","menuModal","closeMenu");
-setupModal("reportBtn","reportModal","closeReport");
-
-// Report Form Submit (no file upload)
-document.getElementById("reportForm").onsubmit = async (e) => {
-  e.preventDefault();
-  const msg = document.getElementById("reportMsg");
-  msg.textContent = "上傳中...";
-
-  const formData = new FormData(e.target);
-  const data = {
-    name: formData.get("name"),
-    unit: formData.get("unit"),
-    date: formData.get("date"),
-    hospital: formData.get("hospital"),
-    doctor: formData.get("doctor"),
-    note: formData.get("note")
-  };
-
-  try {
-    const response = await fetch("https://script.google.com/macros/s/AKfycbyOK8JPVH0-stzBpBg-iaPaD6RBLqLPzyZ0wJu0ZogUNzHv5gwI3bF0rgT5VLwkbwa1/exec", {
-      method:"POST",
-      body: JSON.stringify(data),
-      headers: {"Content-Type":"application/json"}
-    });
-    const result = await response.json();
-    msg.textContent = result.message;
-  } catch(err) {
-    msg.textContent = "上傳失敗：" + err;
-  }
-};
 </script>
 </body>
 </html>
