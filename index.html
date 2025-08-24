@@ -5,60 +5,107 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>二營健康管理中心</title>
   <style>
-    /* Reset & safety */
+    /* ===== Reset & safety ===== */
     *,*::before,*::after{ box-sizing:border-box; }
     html,body{ width:100%; max-width:100%; overflow-x:hidden; -webkit-text-size-adjust:100%; }
-    body{ margin:0; font-family: Arial,"Noto Sans TC",system-ui,-apple-system,sans-serif;
-          color:#111; min-height:100svh; display:flex; flex-direction:column;
-          background: linear-gradient(180deg,#0f5fb6 0%, #2382e0 52%, #e6f1ff 100%); }
+    :root{
+      --hdr-a:#0f5fb6; --hdr-b:#2382e0;      /* header gradient */
+      --bg-a:#0f5fb6; --bg-b:#2382e0;        /* middle gradient start-mid */
+      --bg-c:#ffffff;                         /* page bottom */
+      --ink:#111; --ink-dim:#334155;
+      --card:#ffffff; --card-b:#e5e7eb;
+      --btn-blue:#1766d8; --btn-green:#24a35f;
+    }
+    body{
+      margin:0; font-family: Arial,"Noto Sans TC",system-ui,-apple-system,sans-serif;
+      color:var(--ink); min-height:100svh; display:flex; flex-direction:column;
+      background:
+        linear-gradient(180deg,var(--bg-a) 0%, var(--bg-b) 55%, var(--bg-c) 55%);
+    }
 
-    header{ color:#fff; padding:1rem; text-align:center; border-bottom:1px solid rgba(255,255,255,.3); }
-    h1{ margin:0; font-size:1.5rem; }
-    #marquee{ overflow:hidden; white-space:nowrap; animation:marquee 28s linear infinite; font-weight:700; margin-top:.4rem; }
-    @keyframes marquee{ 0%{transform:translateX(100%);} 100%{transform:translateX(-100%);} }
+    /* ===== Header ===== */
+    header{
+      color:#fff; padding:1.1rem 1rem .9rem; text-align:center;
+      background: linear-gradient(135deg,var(--hdr-a),var(--hdr-b));
+      border-bottom:1px solid rgba(255,255,255,.35);
+    }
+    h1{ margin:0; font-size:1.6rem; letter-spacing:.02em; }
+    #marquee{ overflow:hidden; white-space:nowrap; animation:marquee 28s linear infinite;
+              font-weight:800; margin-top:.35rem; opacity:.95; }
+    @keyframes marquee{0%{transform:translateX(100%);}100%{transform:translateX(-100%);}}
     @media (prefers-reduced-motion:reduce){ #marquee{ animation:none; white-space:normal; } }
 
-    main{ padding:1.2rem 0 2rem; flex:1; }
+    /* ===== Main layout ===== */
+    main{ padding:1.2rem 0 2.2rem; flex:1; }
     .wrap{ max-width:520px; margin:0 auto; padding:0 16px; }
 
-    .card{ background:rgba(255,255,255,.75); border:1px solid #e5e7eb; border-radius:16px; padding:1.25rem;
-           box-shadow:0 8px 24px rgba(0,0,0,.08); backdrop-filter:blur(6px); text-align:left; margin-bottom:1.6rem; }
+    .card{
+      background:rgba(255,255,255,.78); border:1px solid var(--card-b);
+      border-radius:16px; padding:1.25rem; box-shadow:0 10px 24px rgba(0,0,0,.08);
+      backdrop-filter:blur(6px); text-align:left; margin-bottom:1.6rem;
+    }
     .card h2{ margin:.2rem 0 .6rem; font-size:1.25rem; }
 
-    /* Buttons (outer & modal same) */
-    .btn{ display:inline-flex; align-items:center; justify-content:center;
-          width:100%; margin:.8rem 0; padding:.95rem 1rem; font-size:1rem; font-weight:800;
-          border:none; border-radius:14px; color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.12); }
-    .primary{ background:#0f6ad8; } .secondary{ background:#2cb36c; }
+    /* ===== Buttons (outer & inner consistent) ===== */
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:100%; margin:.8rem 0; padding:1rem;
+      font-size:1rem; font-weight:800; border:none; border-radius:16px; color:#fff;
+      box-shadow:0 3px 10px rgba(0,0,0,.14);
+      transition: filter .15s ease, transform .05s ease;
+    }
+    .btn:hover{ filter:brightness(1.03); }
+    .btn:active{ transform:translateY(1px); }
+    .primary{ background:linear-gradient(180deg, var(--btn-blue), #3a86e9); }
+    .secondary{ background:linear-gradient(180deg, var(--btn-green), #1e8f54); }
 
-    footer{ text-align:center; padding:.7rem; margin-top:auto; background:rgba(255,255,255,.35);
-            border-top:1px solid rgba(255,255,255,.35); font-size:.8rem; }
+    footer{
+      margin-top:auto; background:#ffffff; border-top:1px solid rgba(0,0,0,.06);
+      text-align:center; padding:.8rem; font-size:.82rem; color:#475569;
+    }
 
-    /* Modal */
+    /* ===== Modal ===== */
     .modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
             padding:max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)) 12px; z-index:100; }
     .modal[open]{ display:block; }
     .modal-content{
       background:#fff; color:#000; width:calc(100% - 24px); max-width:720px;
-      margin:0 auto; padding:16px; border-radius:16px; border:1px solid #e5e7eb;
+      margin:0 auto; padding:18px 18px 16px; border-radius:18px; border:1px solid #e5e7eb;
       max-height:calc(100svh - 2*max(12px, env(safe-area-inset-top)) - 24px);
       overflow:auto; -webkit-overflow-scrolling:touch;
-      box-shadow:0 10px 28px rgba(0,0,0,.2);
+      box-shadow:0 12px 32px rgba(0,0,0,.20);
     }
-    .close{ background:none; border:none; font-size:28px; float:right; cursor:pointer; line-height:1; }
+    .modal-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:.4rem; }
+    .close{ background:none; border:none; font-size:28px; cursor:pointer; color:#2563eb; }
 
-    .row{ display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; }
-    .modal-actions{ display:flex; gap:.75rem; width:100%; }
-    .modal-actions .btn{ flex:1; margin:0; min-width:0; } /* min-width:0 防止 flex 溢出 */
+    /* fields: same width smaller */
+    .fields{ display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; margin:.2rem 0 0.75rem; }
+    .field{ display:flex; flex-direction:column; gap:.35rem; font-weight:800; color:#111; }
+    .field input, .field select{
+      width:210px; max-width:210px;
+      background:#fff; color:#000; border:1px solid #d1d5db; border-radius:12px;
+      padding:.55rem .8rem; font-size:.95rem; box-shadow:0 1px 2px rgba(0,0,0,.06);
+    }
 
-    /* Card-style menu layout */
-    .grid{ display:grid; gap:.8rem; grid-template-columns:1fr; }
-    .menu{ border:1px solid #e5e7eb; border-radius:14px; padding:1rem; background:#fff; color:#000; }
-    .menu h3{ margin:.2rem 0 .4rem; font-size:1.1rem; }
-    .meta{ font-size:.92rem; color:#334155; }
-    .badge{ display:inline-block; padding:.25rem .6rem; margin-right:.4rem; border-radius:999px; font-size:.78rem; border:1px solid #e5e7eb; background:#f8fafc; color:#475569; }
-    .note{ margin:.4rem 0 0; font-size:.85rem; color:#475569; }
-    #calories{ margin-top:.4rem; font-weight:700; }
+    /* inner action buttons like fig#2, same container width as white box */
+    .modal-actions{ display:flex; gap:.9rem; margin:.4rem 0 1rem; }
+    .modal-actions .btn{ flex:1; margin:0; min-width:0; padding:.95rem; border-radius:20px; }
+
+    /* Menu cards */
+    .grid{ display:grid; gap:.85rem; grid-template-columns:1fr; }
+    .menu{ border:1px solid #e5e7eb; border-radius:16px; padding:1rem; background:#fff; color:#000; }
+    .menu h3{ margin:.2rem 0 .5rem; font-size:1.15rem; font-weight:900; }
+    .meta{ font-size:.95rem; color:#334155; }
+    .pill{ display:inline-block; padding:.32rem .6rem; margin-right:.35rem; border-radius:999px;
+           border:1px solid #e5e7eb; background:#f8fafc; color:#475569; font-size:.82rem; font-weight:800; }
+    .note{ margin:.45rem 0 0; font-size:.88rem; color:#475569; }
+    #calories{ margin-top:.6rem; font-weight:900; }
+
+    /* badges per meal */
+    .badge{ display:inline-block; padding:.3rem .6rem; border-radius:999px; border:1px solid #f2f2f2; font-size:.82rem; margin-bottom:.35rem; }
+    .badge.b{ background:#fff2ec; color:#b93815; }
+    .badge.l{ background:#eef5ff; color:#0b6bcf; }
+    .badge.d{ background:#ecfdf3; color:#067647; }
   </style>
 </head>
 <body>
@@ -82,14 +129,28 @@
 
 <div id="menuModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
   <div class="modal-content">
-    <button id="closeMenu" class="close" aria-label="關閉">&times;</button>
-    <h2 id="menuTitle">今日建議菜單</h2>
+    <div class="modal-header">
+      <h2 id="menuTitle" style="margin:0;">今日建議菜單</h2>
+      <button id="closeMenu" class="close" aria-label="關閉">&times;</button>
+    </div>
 
-    <div class="row" style="margin:.3rem 0 .8rem">
-      <div class="modal-actions">
-        <button id="randBtn" class="btn primary" type="button">抽籤（避免重複）</button>
-        <button id="byWeekBtn" class="btn secondary" type="button">依星期菜單</button>
-      </div>
+    <div class="fields">
+      <label class="field">飲食偏好：
+        <select id="dietSelect">
+          <option value="all">不限制</option>
+          <option value="veg">素食</option>
+          <option value="hp">高蛋白</option>
+          <option value="lc">低醣</option>
+        </select>
+      </label>
+      <label class="field">每天目標熱量(kcal)：
+        <input id="calTarget" type="number" placeholder="例如 1800" min="800" max="4000" step="50">
+      </label>
+    </div>
+
+    <div class="modal-actions">
+      <button id="randBtn" class="btn primary" type="button">抽籤（避免重複）</button>
+      <button id="byWeekBtn" class="btn secondary" type="button">依星期菜單</button>
     </div>
 
     <div id="menuList" class="grid"></div>
@@ -100,20 +161,24 @@
 <footer>&copy; <span id="rocYear"></span> 二營健康管理中心</footer>
 
 <script>
-// 隨機 header 色
-const headerColors=[
-  "linear-gradient(135deg,#0f5fb6,#2382e0)",
-  "linear-gradient(135deg,#1d976c,#93f9b9)",
-  "linear-gradient(135deg,#ff512f,#dd2476)",
-  "linear-gradient(135deg,#654ea3,#eaafc8)"
+// ===== Theme pool: header gradient + middle gradient derived =====
+const THEMES = [
+  { a:"#0f5fb6", b:"#2382e0", midA:"#0f5fb6", midB:"#2382e0" },
+  { a:"#6a11cb", b:"#2575fc", midA:"#5f65d6", midB:"#6bb0ff" },
+  { a:"#d53369", b:"#daae51", midA:"#d64467", midB:"#e9c074" },
+  { a:"#11998e", b:"#38ef7d", midA:"#158f86", midB:"#7cefa4" }
 ];
-document.querySelector("header").style.background=headerColors[Math.floor(Math.random()*headerColors.length)];
+const t = THEMES[Math.floor(Math.random()*THEMES.length)];
+document.documentElement.style.setProperty('--hdr-a', t.a);
+document.documentElement.style.setProperty('--hdr-b', t.b);
+document.documentElement.style.setProperty('--bg-a', t.midA);
+document.documentElement.style.setProperty('--bg-b', t.midB);
 
-// 標語
-const slogans=["均衡飲食，體能常青","多喝水，少喝含糖飲料","睡眠充足，精神百倍","規律運動，強健體魄","拒菸酒檳榔，健康一生","三餐定時定量，少吃宵夜","控制體重，守護戰力","壓力釋放，心理健康","每週至少運動150分鐘","少油少鹽少糖，多蔬果高纖維"];
+// slogans
+const slogans=["均衡飲食，體能常青","多喝水，少喝含糖飲料","睡眠充足，精神百倍","規律運動，強健體魄","拒菸酒檳榔，健康一生","三餐定時定量，少吃宵夜","控制體重，守護戰力","每週至少運動150分鐘","少油少鹽少糖，多蔬果高纖維"];
 document.getElementById('marquee').textContent=slogans[Math.floor(Math.random()*slogans.length)];
 
-// 值班（週三起算）
+// duty window (Wed cycle)
 (function(){
   const el=document.getElementById('dutyWindow'); if(!el) return;
   const pad2=n=>String(n).padStart(2,'0'); const toRoc=d=>`${d.getFullYear()-1911}年${pad2(d.getMonth()+1)}月${pad2(d.getDate())}日`;
@@ -128,44 +193,89 @@ document.getElementById('marquee').textContent=slogans[Math.floor(Math.random()*
   document.getElementById('rocYear').textContent=String(new Date().getFullYear()-1911);
 })();
 
-// 資料（示例）
-const today = new Date().getDay();
-const weekly = [
-  [{t:"早餐", name:"全麥吐司＋低脂牛奶", kcal:300},
-   {t:"午餐", name:"鮭魚＋糙米＋青花菜", kcal:550, tags:["hp","lc"]},
-   {t:"晚餐", name:"蒸蛋＋炒菠菜＋水果", kcal:320, tags:["veg","lc"]}],
-  [{t:"早餐", name:"燕麥＋水煮蛋＋無糖豆漿", kcal:350, tags:["hp"]},
-   {t:"午餐", name:"雞胸肉＋糙米＋燙青菜", kcal:500, tags:["hp"]},
-   {t:"晚餐", name:"蔬菜湯＋豆腐＋水果", kcal:300, tags:["veg"]}]
+// Open BMI
+document.getElementById('bmiBtn').addEventListener('click',()=>{
+  window.open('https://forms.gle/cr3efubbA1WoArfp6','_blank','noopener');
+});
+
+// Menu data (sample + tags)
+const menusByWeek = [
+  [
+    {t:"早餐", name:"燕麥＋水煮蛋＋無糖豆漿", kcal:350, tags:["hp"]},
+    {t:"午餐", name:"雞胸肉＋糙米＋燙青菜", kcal:500, tags:["hp"]},
+    {t:"晚餐", name:"蔬菜湯＋豆腐＋水果", kcal:300, tags:["veg","lc"]}
+  ],
+  [
+    {t:"早餐", name:"全麥吐司＋低脂牛奶", kcal:300},
+    {t:"午餐", name:"鮭魚＋糙米＋青花菜", kcal:560, tags:["hp","lc"]},
+    {t:"晚餐", name:"蒸蛋＋炒菠菜＋水果", kcal:320, tags:["veg","lc"]}
+  ],
+  [
+    {t:"早餐", name:"無糖優格＋堅果＋水果", kcal:300, tags:["veg","lc"]},
+    {t:"午餐", name:"雞腿排＋糙米＋時蔬", kcal:540, tags:["hp"]},
+    {t:"晚餐", name:"豆漿＋雞胸沙拉", kcal:290, tags:["veg","lc"]}
+  ],
+  [
+    {t:"早餐", name:"水煮蛋＋燕麥粥", kcal:340, tags:["hp"]},
+    {t:"午餐", name:"牛肉片＋地瓜＋青菜", kcal:560, tags:["hp"]},
+    {t:"晚餐", name:"味噌湯＋豆腐＋水果", kcal:310, tags:["veg","lc"]}
+  ],
+  [
+    {t:"早餐", name:"全麥饅頭＋豆漿", kcal:360, tags:["veg"]},
+    {t:"午餐", name:"菇菇時蔬炒麵＋水煮蛋", kcal:520, tags:["veg"]},
+    {t:"晚餐", name:"蔬菜湯＋雞蛋＋水果", kcal:290, tags:["veg","lc"]}
+  ],
+  [
+    {t:"早餐", name:"水煮蛋＋黑咖啡＋水果", kcal:260, tags:["lc"]},
+    {t:"午餐", name:"鮭魚＋地瓜＋青菜", kcal:540, tags:["hp","lc"]},
+    {t:"晚餐", name:"豆漿＋炒青菜", kcal:270, tags:["veg","lc"]}
+  ],
+  [
+    {t:"早餐", name:"燕麥片＋堅果＋牛奶", kcal:370},
+    {t:"午餐", name:"雞胸肉便當（半飯）＋時蔬", kcal:500, tags:["hp","lc"]},
+    {t:"晚餐", name:"蔬菜湯＋豆腐＋水果", kcal:310, tags:["veg","lc"]}
+  ]
 ];
-const menus = weekly[today % weekly.length];
+
+function pickDayList(pref='all'){
+  const idx = new Date().getDay();
+  const list = menusByWeek[idx];
+  if(pref==='all') return list;
+  const hasTag = x => (x.tags||[]).includes(pref);
+  return list.map(x=> hasTag(x)? x : x ); // 依星期模式：如果沒有偏好，仍保留原本（與你舊版一致）
+}
 
 function render(list){
-  const mapBadge={早餐:"#ffeee6",午餐:"#e6f0ff",晚餐:"#e6fff2"};
-  document.getElementById("menuList").innerHTML = list.map(i => `
+  const badgeClass = t => t==="早餐"?"b":(t==="午餐"?"l":"d");
+  document.getElementById("menuList").innerHTML = list.map(i=>`
     <article class="menu">
-      <span class="badge" style="background:${mapBadge[i.t]||'#f8fafc'}">${i.t}</span>
+      <span class="badge ${badgeClass(i.t)}">${i.t}</span>
       <h3>${i.name}</h3>
-      <p class="meta">熱量：約 ${i.kcal} kcal ${(i.tags||[]).map(t=>`<span class='badge'>${t}</span>`).join('')}</p>
+      <p class="meta">熱量：約 ${i.kcal} kcal ${(i.tags||[]).map(tag=>`<span class="pill">${tag}</span>`).join("")}</p>
       <p class="note">建議：餐盤 1/2 蔬菜、1/4 蛋白、1/4 全穀；外食可減飯半碗或去皮。</p>
-    </article>`).join("");
-  const total=list.reduce((a,b)=>a+b.kcal,0);
-  document.getElementById("calories").textContent=`每日總熱量：約 ${total} kcal`;
+    </article>
+  `).join("");
+  const total = list.reduce((a,b)=>a+(b.kcal||0),0);
+  document.getElementById("calories").textContent = `每日總熱量：約 ${total} kcal`;
 }
-render(menus);
 
-// Modal 控制
+function shuffle(a){ const b=[...a]; for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]];} return b; }
+
+document.getElementById('randBtn').addEventListener('click', ()=>{
+  const pref = document.getElementById('dietSelect').value;
+  const base = pickDayList(pref);
+  render(shuffle(base));
+});
+document.getElementById('byWeekBtn').addEventListener('click', ()=>{
+  const pref = document.getElementById('dietSelect').value;
+  render(pickDayList(pref));
+});
+
+// open/close modal
 const modal=document.getElementById('menuModal');
-document.getElementById('menuBtn').addEventListener('click',()=>{ modal.setAttribute('open',''); document.body.style.overflow='hidden'; });
+document.getElementById('menuBtn').addEventListener('click',()=>{ modal.setAttribute('open',''); document.body.style.overflow='hidden'; render(pickDayList('all')); });
 document.getElementById('closeMenu').addEventListener('click',()=>{ modal.removeAttribute('open'); document.body.style.overflow=''; });
 window.addEventListener('click',e=>{ if(e.target===modal){ modal.removeAttribute('open'); document.body.style.overflow=''; }});
-
-// 抽籤/依星期（示例邏輯）
-document.getElementById('randBtn').addEventListener('click',()=>{
-  const shuffled=[...menus].sort(()=>Math.random()-0.5);
-  render(shuffled);
-});
-document.getElementById('byWeekBtn').addEventListener('click',()=>render(menus));
 </script>
 </body>
 </html>
