@@ -184,7 +184,6 @@
 
   <div class="row" style="max-width:720px;margin:0 auto;">
     <button id="menuBtn" type="button" class="btn secondary" aria-haspopup="dialog" aria-controls="menuModal">今日建議減脂菜單</button>
-    <button id="themeBtn" type="button" class="btn ghost" aria-haspopup="dialog" aria-controls="themeModal">背景與樣式設定</button>
   </div>
 </main>
 
@@ -228,18 +227,10 @@
   </div>
 </div>
 
-<!-- 主題設定 Dialog -->
-<div id="themeModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="themeTitle">
-  <div class="modal-content">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <h2 id="themeTitle" style="margin:0;">背景與樣式設定</h2>
-      <button id="closeTheme" class="close" type="button" aria-label="關閉視窗">&times;</button>
-    </div>
 
     <div class="grid" id="themeGrid" style="margin-top:.5rem;">
       <!-- 以 JS 動態注入主題條目 -->
     </div>
-
     <div class="row" style="margin-top:1rem;">
       <label><input type="checkbox" id="animToggle" /> 啟用背景動畫</label>
       <small class="muted">（尊重「減少動態」系統偏好時將自動關閉）</small>
