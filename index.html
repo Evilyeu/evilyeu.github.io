@@ -4,440 +4,169 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>二營健康管理中心</title>
-  <meta name="color-scheme" content="light dark">
   <style>
-    /* ===== 基礎變數 ===== */
-    :root{
-      --brand-600: #1252a6;
-      --brand-500: #0f6ad8;
-      --brand-400: #4a93ef;
-      --blue: #0f6ad8;
-      --green: #2cb36c;
-
-      --ink-900:#101828; --ink-700:#344054; --ink-600:#475467;
-      --neutral-50:#f9fafb; --neutral-100:#f2f4f7; --neutral-200:#e4e7ec; --neutral-300:#d0d5dd;
-
-      --radius-md:14px; --radius-lg:18px;
-      --elev-1: 0 2px 8px rgba(0,0,0,.08);
-      --elev-2: 0 6px 18px rgba(0,0,0,.12);
-      --elev-3: 0 12px 28px rgba(0,0,0,.16);
+    body {
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      margin:0; padding:0;
+      background: linear-gradient(180deg, #0f5fb6 0%, #2382e0 50%, #e6f1ff 100%);
+      color:#222;
     }
-
-    /* ===== 全站排版 ===== */
-    html, body { max-width:100%; overflow-x:hidden; -webkit-text-size-adjust:100%; }
-    body{
-      margin:0; font-family: Arial,"Noto Sans TC",system-ui,-apple-system,sans-serif;
-      color:var(--ink-900); min-height:100svh; display:flex; flex-direction:column;
-      background: linear-gradient(180deg,#0f5fb6,#2382e0 58%,#eaf2ff 58%);
-      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
-      font-size: clamp(15px, 1.25vw + 0.5rem, 16.5px);
-      line-height: 1.6;
+    header {
+      color:#fff; padding:1rem; text-align:center;
+      border-bottom:1px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(6px);
     }
-    header{
-      background: linear-gradient(180deg, var(--brand-600), var(--brand-500));
-      color:#fff; padding:1rem; text-align:center; box-shadow: var(--elev-1);
-      border-bottom:1px solid rgba(255,255,255,.25);
+    h1 { margin:0; font-size:1.4rem; }
+    #marquee {
+      overflow:hidden; white-space:nowrap;
+      animation: marquee 30s linear infinite;
+      font-weight:bold; margin-top:0.3rem; font-size:0.9rem;
     }
-    h1{ margin:0; font-size: clamp(20px, 2.4vw + 0.8rem, 28px); letter-spacing:.02em; }
-    #marquee{ display:block; overflow:hidden; white-space:nowrap; animation:marquee 28s linear infinite; font-weight:700; margin-top:.5rem; opacity:.95; }
-    @keyframes marquee{0%{transform:translateX(100%);}100%{transform:translateX(-100%);}}
-    @media (prefers-reduced-motion: reduce){ #marquee{ animation:none; white-space:normal; } }
-
-    main{ padding: clamp(20px, 2.8vw + 8px, 40px) 0 2rem; flex:1; }
+    @keyframes marquee {
+      0% { transform:translateX(100%); }
+      100% { transform:translateX(-100%); }
+    }
+    main { text-align:center; padding:1.2rem; }
     .wrap{ max-width:520px; margin:0 auto; padding:0 16px; }
-
-    .card{
-      background: rgba(255,255,255,.72);
-      border: 1px solid var(--neutral-200);
-      border-radius: var(--radius-lg);
-      padding:1.25rem;
-      box-shadow: var(--elev-2);
-      backdrop-filter: blur(8px);
+    #bulletin {
+      margin:0 auto 1.2rem auto; padding:1rem;
+      background:#fff; color:#000;
+      border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.12);
       text-align:left;
-      margin-bottom:2rem;
     }
-    .card h2{ margin:.25rem 0 .5rem; font-size:1.25rem; }
-
-    /* ===== 統一按鈕（外部與 Modal 內）——兩顆一模一樣 ===== */
-    a.btn, button.btn{ -webkit-appearance:none; appearance:none; text-decoration:none; }
-    .btn{
+    #bulletin h2 { margin-top:0; font-size:1.1rem; }
+    .btn {
       display:inline-flex; align-items:center; justify-content:center;
-      width:100%; box-sizing:border-box;
-      margin:.9rem 0; padding:.95rem 1rem;
-      font-size:1rem; font-weight:800; letter-spacing:.02em;
-      border:none; border-radius: var(--radius-md); color:#fff;
-      box-shadow: var(--elev-1);
-      transition: transform .08s ease, box-shadow .18s ease, opacity .18s ease;
+      width:100%; margin:0.6rem 0; padding:0.9rem;
+      font-size:1rem; font-weight:700;
+      border:none; border-radius:12px; cursor:pointer;
+      color:#fff; box-sizing:border-box;
+      box-shadow:0 2px 6px rgba(0,0,0,0.15);
+      transition: filter .2s, transform .1s;
     }
-    .btn.primary{ background: linear-gradient(180deg, var(--brand-500), var(--brand-400)); }
-    .btn.secondary{ background: linear-gradient(180deg, #2cb36c, #1f9e5a); }
-    .btn:hover{ transform: translateY(-1px); box-shadow: var(--elev-2); }
-    .btn:active{ transform: translateY(0); box-shadow: var(--elev-1); opacity:.96; }
-    .btn:focus-visible{ outline:2px solid rgba(15,106,216,.32); outline-offset:2px; }
-
-    footer{ text-align:center; padding:.6rem; margin-top:auto; background:rgba(255,255,255,0.3);
-      border-top:1px solid rgba(255,255,255,.3); font-size:.8rem; }
-
-    /* ===== Modal（安全區＋內部滾動） ===== */
-    .modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
-      padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)) 12px; z-index:100; }
-    .modal[open]{ display:block; }
-    .modal-content{
-      background:rgba(255,255,255,0.96); color:#000;
-      margin:0 auto; padding:16px;
-      border-radius: var(--radius-lg); width:min(720px,92vw);
-      border:1px solid var(--neutral-200); box-shadow: var(--elev-3);
-      max-height: calc(100svh - 2*max(12px, env(safe-area-inset-top)) - 24px);
+    .btn:hover { filter:brightness(1.04); }
+    .btn:active { transform:translateY(1px); }
+    .primary { background:#0f6ad8; }
+    .secondary { background:#2cb36c; }
+    footer {
+      text-align:center; padding:0.8rem; margin-top:2rem;
+      font-size:0.75rem; color:#444;
+    }
+    /* Modal */
+    .modal { display:none; position:fixed; z-index:100; left:0; top:0;
+      width:100%; height:100%; overflow:auto;
+      background:rgba(0,0,0,0.55);
+      padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)) 12px;
+    }
+    .modal-content {
+      background:#fff; color:#000;
+      margin:0 auto; padding:20px;
+      border-radius:16px; width:calc(100% - 24px); max-width:720px;
+      max-height:calc(100svh - 48px);
       overflow:auto; -webkit-overflow-scrolling:touch;
+      box-shadow:0 4px 16px rgba(0,0,0,0.2);
     }
-    .modal-header{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
-    .close{ background:none; border:none; font-size:28px; cursor:pointer; line-height:1; }
-
-    .row{ display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; }
-    .row label{ display:flex; flex-direction:column; gap:6px; font-weight:700; color:#000; }
-
-    /* 表單欄位：白底黑字，清楚可讀 */
-    #dietSelect, #calTarget{
-      background:#fff !important; color:#000 !important;
-      border:1px solid var(--neutral-300); border-radius: var(--radius-md);
-      padding:10px 12px; line-height:1.2; width:100%; max-width:14rem;
-      box-shadow:0 1px 2px rgba(0,0,0,.06);
-    }
-    #calTarget::placeholder{ color:#666; opacity:1; }
-    #dietSelect:focus, #calTarget:focus{ outline:none; box-shadow:0 0 0 3px rgba(17, 93, 199, .25); border-color:#80bfff; }
-
-    .modal-actions{ display:flex; gap:.75rem; width:100%; }
-    .modal-actions .btn{ flex:1; margin:0; } /* 和外部按鈕同高同字級 */
-
-    /* 菜單卡片：固定黑字白底、餐別徽章 */
-    .grid{ display:grid; gap:.75rem; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); }
-    .menu-card{
-      display:grid; grid-template-columns:auto 1fr; gap:.5rem .8rem; align-items:start; padding:1rem;
-      border-radius: var(--radius-md); background:#fff; border:1px solid var(--neutral-200); color:#000;
-    }
-    .menu-card .badge{
-      grid-row:1 / span 2; align-self:center; font-size:.78rem; padding:.25rem .6rem; border-radius:999px;
-      background: var(--neutral-100); border:1px solid var(--neutral-200); color:var(--ink-700);
-      font-weight:700; text-align:center; min-width:3.2rem;
-    }
-    .badge[data-type="早餐"]{ background:#fff5f2; border-color:#ffd6cc; color:#b93815; }
-    .badge[data-type="午餐"]{ background:#eff8ff; border-color:#cfe4ff; color:#0b6bcf; }
-    .badge[data-type="晚餐"]{ background:#ecfdf3; border-color:#c9f3dd; color:#067647; }
-    .menu-title{ margin:0; font-weight:800; }
-    .menu-meta{ font-size:.9rem; color: var(--ink-600); }
-    .pill{ display:inline-block; padding:.35rem .6rem; border-radius:999px; background:var(--neutral-100); border:1px solid var(--neutral-200);
-           font-size:.82rem; margin:.15rem .25rem 0 0; color:var(--ink-700); }
-    .note{ font-size:.85rem; opacity:.9; margin:.35rem 0 0; }
-
-    .warn{ background:#fff7e6; border:1px solid #ffe3b3; color:#b54708; padding:.6rem .8rem; border-radius:12px; margin:.5rem 0 1rem; }
-
-    /* 可及性 */
-    :focus-visible{ outline: 2px solid #99c4ff; outline-offset: 2px; }
-    @media (prefers-reduced-motion: reduce){ *{ animation: none !important; transition: none !important; } }
+    .close { color:#333; float:right; font-size:28px; font-weight:bold; cursor:pointer; }
+    .close:hover { color:#000; }
+    .row-buttons{ display:flex; gap:0.75rem; margin:0.5rem 0; }
+    .row-buttons .btn{ flex:1; margin:0; }
   </style>
 </head>
 <body>
 <header>
-  <h1 style="display:flex;gap:.5rem;align-items:center;justify-content:center;">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-      <path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7zm0 9.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
-    </svg>
-    二營健康管理中心
-  </h1>
-  <div id="marquee" aria-live="polite">健康標語載入中...</div>
+  <h1>📍 二營健康管理中心</h1>
+  <div id="marquee">健康標語載入中...</div>
 </header>
 
 <main>
   <div class="wrap">
-    <section class="card" aria-labelledby="dutyTitle">
-      <h2 id="dutyTitle">今日值班人員</h2>
-      <p>
-        少尉鍾俊佑 <a href="tel:0938000372">0938-000-372</a><br>
-        上士李啟祥 <a href="tel:0955797745">0955-797-745</a>
-      </p>
-
-      <!-- 自動/手動：預設每週三起算 7 天，可用 data-start/end 覆寫（YYYY-MM-DD 或 ROC 年份） -->
-      <small class="muted" id="dutyWindow" data-auto="1" data-cycle="wed" data-length="7">
+    <div id="bulletin">
+      <h2>今日值班人員</h2>
+      <p>少尉鍾俊佑 0938-000-372<br>
+         上士李啟祥 0955-797-745</p>
+      <small id="dutyWindow" data-auto="1" data-cycle="wed" data-length="7">
         值班時間：114年08月20日 ～ 114年08月27日
       </small>
-    </section>
+    </div>
 
-    <!-- 外部兩顆按鈕：同元素 <button>，尺寸永遠一致 -->
     <button id="bmiBtn" class="btn primary" type="button">BMI 回報</button>
-    <button id="menuBtn" class="btn secondary" type="button" aria-haspopup="dialog" aria-controls="menuModal">今日建議菜單</button>
+    <button id="menuBtn" class="btn secondary" type="button">今日建議菜單</button>
   </div>
 </main>
 
-<!-- 建議菜單 Dialog -->
-<div id="menuModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="menuTitle" aria-describedby="menuList">
+<!-- 減脂菜單 Modal -->
+<div id="menuModal" class="modal">
   <div class="modal-content">
-    <div class="modal-header">
-      <h2 id="menuTitle" style="margin:0;">今日建議菜單</h2>
-      <button id="closeMenu" class="close" type="button" aria-label="關閉視窗">&times;</button>
+    <span id="closeMenu" class="close">&times;</span>
+    <h2>今日建議菜單</h2>
+    <div class="row-buttons">
+      <button id="randBtn" class="btn primary">抽籤（避免重複）</button>
+      <button id="byWeekBtn" class="btn secondary">依星期菜單</button>
     </div>
-
-    <div class="row" style="margin:.5rem 0 1rem;">
-      <label>飲食偏好：
-        <select id="dietSelect">
-          <option value="all">不限制</option>
-          <option value="veg">素食</option>
-          <option value="hp">高蛋白</option>
-          <option value="lc">低醣</option>
-        </select>
-      </label>
-
-      <label>每天目標熱量(kcal)：
-        <input id="calTarget" type="number" min="800" max="4000" step="50" placeholder="例如 1800">
-      </label>
-
-      <div class="modal-actions">
-        <button id="randBtn" type="button" class="btn primary">抽籤（避免重複）</button>
-        <button id="byWeekBtn" type="button" class="btn secondary">依星期菜單</button>
-      </div>
-    </div>
-
-    <div id="notice"></div>
-    <div id="menuSummary" class="muted" style="margin:.25rem 0 1rem;"></div>
-    <div id="menuList" class="grid"></div>
-    <p id="calories" class="muted"></p>
-
-    <details style="margin-top:1rem;">
-      <summary>可選加餐（每份 80～150 kcal）</summary>
-      <p class="note">黑咖啡、無糖豆漿、原味優格100g、香蕉小1根、核桃/杏仁10g、海帶芽湯、毛豆80g。</p>
-    </details>
+    <ul id="menuList"></ul>
+    <p id="calories"></p>
   </div>
 </div>
 
 <footer>
-  <p>&copy; <span id="rocYear"></span> 二營健康管理中心</p>
+  <p>&copy; 114 二營健康管理中心</p>
 </footer>
 
 <script>
-/* ===== 背景主題（固定藍系）＋標語 ===== */
-const slogans = [
-  "三餐定時定量，少吃宵夜","少油少鹽少糖，多蔬果高纖維","多喝水，少喝含糖飲料",
-  "每週至少運動150分鐘","睡眠充足，精神百倍","拒菸酒檳榔，健康一生",
-  "暖身10分鐘，降低運動傷害風險","行軍補水不停歇，每20分鐘100～200ml"
+// Header 隨機色池
+const headerColors = [
+  "linear-gradient(135deg, #0f5fb6, #2382e0)",
+  "linear-gradient(135deg, #1d976c, #93f9b9)",
+  "linear-gradient(135deg, #ff512f, #dd2476)",
+  "linear-gradient(135deg, #654ea3, #eaafc8)"
 ];
-document.getElementById('marquee').textContent = slogans[Math.floor(Math.random()*slogans.length)];
+document.querySelector("header").style.background =
+  headerColors[Math.floor(Math.random() * headerColors.length)];
 
-/* ===== 值班時間：自動週期或手動覆寫 ===== */
-(function renderDutyWindow(){
-  const el = document.getElementById('dutyWindow');
-  if (!el) return;
-  const pad2 = n => String(n).padStart(2,'0');
-  const toRocStr = d => `${d.getFullYear()-1911}年${pad2(d.getMonth()+1)}月${pad2(d.getDate())}日`;
-  const parseIso = s => { const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||''); if(!m) return null;
-    const [_,Y,M,D]=m.map(Number); const dt=new Date(Y,M-1,D,0,0,0,0); return Number.isFinite(dt.getTime())?dt:null; };
-  const parseRoc = s => { const m=/^(\d{2,3})-(\d{2})-(\d{2})$/.exec(s||''); if(!m) return null;
-    const [_,Y,M,D]=m.map(Number); const dt=new Date(Y+1911,M-1,D,0,0,0,0); return Number.isFinite(dt.getTime())?dt:null; };
+// 健康標語池
+const slogans = [
+  "均衡飲食，體能常青","多喝水，少喝含糖飲料","睡眠充足，精神百倍",
+  "規律運動，強健體魄","拒菸酒檳榔，健康一生","三餐定時定量，少吃宵夜",
+  "控制體重，守護戰力","壓力釋放，心理健康","每週至少運動150分鐘",
+  "少油少鹽少糖，多蔬果高纖維"
+];
+document.getElementById('marquee').textContent =
+  slogans[Math.floor(Math.random()*slogans.length)];
 
-  const startIso=el.dataset.start, endIso=el.dataset.end;
-  const startRoc=el.dataset.startRoc, endRoc=el.dataset.endRoc;
-  let start = startIso ? parseIso(startIso) : (startRoc ? parseRoc(startRoc) : null);
-  let end   = endIso   ? parseIso(endIso)   : (endRoc   ? parseRoc(endRoc)   : null);
-
-  if (start && end){ el.textContent = `值班時間：${toRocStr(start)} ～ ${toRocStr(end)}`; return; }
-
-  if (el.dataset.auto === '1'){
-    const map = {sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6};
-    const startDow = map[(el.dataset.cycle || 'wed').toLowerCase()] ?? 3;
-    const length   = Math.max(1, parseInt(el.dataset.length||'7',10));
-    const now = new Date();
-    const diff = (now.getDay() - startDow + 7) % 7;
-    const startAuto = new Date(now); startAuto.setDate(now.getDate() - diff); startAuto.setHours(0,0,0,0);
-    const endAuto = new Date(startAuto); endAuto.setDate(startAuto.getDate() + length); endAuto.setHours(23,59,59,999);
-    el.textContent = `值班時間：${toRocStr(startAuto)} ～ ${toRocStr(endAuto)}`;
-  }
-})();
-
-/* ===== 外部按鈕行為 ===== */
+// 開啟 BMI 表單
 document.getElementById('bmiBtn').addEventListener('click', () => {
-  window.open('https://forms.gle/cr3efubbA1WoArfp6', '_blank', 'noopener');
+  window.open('https://forms.gle/cr3efubbA1WoArfp6','_blank','noopener');
 });
 
-/* ===== 菜單資料池（含素食可選、標籤） ===== */
-const fmt = n => (n ?? 0).toLocaleString('zh-Hant-TW');
+// 每日菜單 (範例)
 const menus = [
-  [ {meal:"早餐：燕麥＋水煮蛋＋無糖豆漿", kcal:350, p:24, c:40, f:10, tags:["hp"]},
-    {meal:"午餐：雞胸肉＋糙米＋燙青菜",   kcal:520, p:45, c:55, f:12, tags:["hp"]},
-    {meal:"晚餐：蔬菜湯＋豆腐＋水果",     kcal:300, p:18, c:35, f:8,  tags:["veg"]} ],
-  [ {meal:"早餐：全麥吐司＋低脂牛奶",     kcal:320, p:16, c:45, f:7,  tags:[]},
-    {meal:"午餐：鮭魚＋糙米＋青花菜",     kcal:560, p:40, c:55, f:16, tags:["hp","lc"]},
-    {meal:"晚餐：蒸蛋＋炒菠菜＋水果",     kcal:330, p:22, c:25, f:12, tags:["veg","lc"]} ],
-  [ {meal:"早餐：無糖優格＋堅果＋水果",   kcal:300, p:18, c:28, f:12, tags:["veg","lc"]},
-    {meal:"午餐：雞腿排＋糙米＋時蔬",     kcal:540, p:42, c:55, f:15, tags:["hp"]},
-    {meal:"晚餐：豆漿＋雞胸沙拉",         kcal:290, p:30, c:16, f:8,  tags:["veg","lc"]} ],
-  [ {meal:"早餐：水煮蛋＋燕麥粥",         kcal:340, p:22, c:42, f:9,  tags:["hp"]},
-    {meal:"午餐：牛肉片＋地瓜＋青菜",     kcal:560, p:38, c:55, f:16, tags:["hp"]},
-    {meal:"晚餐：味噌湯＋豆腐＋水果",     kcal:310, p:20, c:30, f:8,  tags:["veg","lc"]} ],
-  [ {meal:"早餐：全麥饅頭＋豆漿",         kcal:360, p:18, c:55, f:8,  tags:["veg"]},
-    {meal:"午餐：菇菇時蔬炒麵＋水煮蛋",   kcal:520, p:24, c:75, f:12, tags:["veg"]},
-    {meal:"晚餐：蔬菜湯＋雞蛋＋水果",     kcal:290, p:16, c:28, f:9,  tags:["veg","lc"]} ],
-  [ {meal:"早餐：水煮蛋＋黑咖啡＋水果",   kcal:260, p:16, c:24, f:8,  tags:["lc"]},
-    {meal:"午餐：鮭魚＋地瓜＋青菜",       kcal:540, p:38, c:48, f:16, tags:["hp","lc"]},
-    {meal:"晚餐：豆漿＋炒青菜",           kcal:270, p:16, c:20, f:9,  tags:["veg","lc"]} ],
-  [ {meal:"早餐：燕麥片＋堅果＋牛奶",     kcal:370, p:18, c:48, f:12, tags:[]},
-    {meal:"午餐：雞胸肉便當（半飯）＋時蔬",kcal:500, p:42, c:45, f:12, tags:["hp","lc"]},
-    {meal:"晚餐：蔬菜湯＋豆腐＋水果",     kcal:310, p:20, c:30, f:8,  tags:["veg","lc"]} ]
+  [
+    {meal:"早餐：燕麥＋水煮蛋＋無糖豆漿", kcal:350},
+    {meal:"午餐：雞胸肉＋糙米＋燙青菜", kcal:500},
+    {meal:"晚餐：蔬菜湯＋豆腐＋水果", kcal:300}
+  ],
+  [
+    {meal:"早餐：全麥吐司＋低脂牛奶", kcal:300},
+    {meal:"午餐：鮭魚＋糙米＋青花菜", kcal:550},
+    {meal:"晚餐：蒸蛋＋炒菠菜＋水果", kcal:320}
+  ]
 ];
-const randomPool = [
-  {meal:"早餐：全麥饅頭＋無糖豆漿",        kcal:340, p:18, c:50, f:8,  tags:["veg"]},
-  {meal:"早餐：無糖優格＋綜合堅果＋水果",  kcal:320, p:18, c:34, f:12, tags:["veg","lc"]},
-  {meal:"早餐：蔬菜蛋餅（少油）＋豆漿",    kcal:360, p:22, c:36, f:12, tags:["veg"]},
-  {meal:"早餐：地瓜200g＋無糖優格",        kcal:320, p:14, c:55, f:6,  tags:["veg","lc"]},
-  {meal:"早餐：豆漿燕麥香蕉昔",            kcal:360, p:18, c:58, f:7,  tags:["veg"]},
-  {meal:"午餐：日式照燒豆腐丼（半飯）",    kcal:480, p:24, c:65, f:12, tags:["veg"]},
-  {meal:"午餐：菇菇時蔬炒麵＋荷包蛋",      kcal:520, p:26, c:72, f:14, tags:["veg"]},
-  {meal:"午餐：五穀米飯＋滷海帶＋涼拌豆干",kcal:500, p:28, c:70, f:10, tags:["veg"]},
-  {meal:"午餐：鷹嘴豆蔬菜沙拉＋藜麥",      kcal:460, p:22, c:56, f:14, tags:["veg","lc"]},
-  {meal:"晚餐：三色蔬菜湯＋板豆腐",        kcal:300, p:22, c:26, f:8,  tags:["veg","lc"]},
-  {meal:"晚餐：蒸蛋＋炒青江菜＋小番茄",    kcal:330, p:22, c:25, f:12, tags:["veg","lc"]},
-  {meal:"晚餐：時蔬冷盤＋毛豆80g＋水果",   kcal:310, p:20, c:32, f:8,  tags:["veg","lc"]},
-  {meal:"午餐：火雞胸沙拉＋玉米半根",      kcal:420, p:36, c:35, f:12, tags:["hp","lc"]},
-  {meal:"晚餐：蒸鱈魚＋花椰菜＋山藥",      kcal:340, p:32, c:28, f:8,  tags:["hp","lc"]},
-  {meal:"晚餐：雞絲小黃瓜涼拌＋皮蛋豆腐",  kcal:300, p:25, c:14, f:12, tags:["hp","lc"]},
-  {meal:"早餐：希臘優格250g＋堅果",        kcal:320, p:24, c:22, f:12, tags:["hp","lc"]},
-  {meal:"午餐：鮭魚排＋糙米飯＋時蔬",      kcal:560, p:40, c:55, f:16, tags:["hp","lc"]},
-  {meal:"晚餐：雞胸蔬菜湯",                kcal:290, p:28, c:12, f:8,  tags:["hp","lc"]}
-];
+const todayMenu = menus[new Date().getDay() % menus.length];
+document.getElementById("menuList").innerHTML =
+  todayMenu.map(i => `<li>${i.meal} (${i.kcal} kcal)</li>`).join("");
+document.getElementById("calories").textContent =
+  "每日總熱量：約 " + todayMenu.reduce((a,b)=>a+b.kcal,0) + " kcal";
 
-/* ===== 工具與渲染 ===== */
-const $ = s=>document.querySelector(s);
-const clamp = (n,min,max)=> Math.max(min, Math.min(max, n));
-
-function filterByPref(items, pref){
-  if (pref==='veg') return items.filter(i=>i.tags?.includes('veg'));
-  if (pref==='hp')  return items.filter(i=>i.tags?.includes('hp'));
-  if (pref==='lc')  return items.filter(i=>i.tags?.includes('lc'));
-  return items;
+// Modal 控制
+function setupModal(btnId, modalId, closeId) {
+  const btn = document.getElementById(btnId);
+  const modal = document.getElementById(modalId);
+  const span = document.getElementById(closeId);
+  btn.onclick = () => { modal.style.display = "block"; document.body.classList.add("modal-open"); }
+  span.onclick = () => { modal.style.display = "none"; document.body.classList.remove("modal-open"); }
+  window.addEventListener("click", e => { if (e.target==modal){ modal.style.display="none"; document.body.classList.remove("modal-open"); }});
 }
-function mealType(text){
-  if (text.startsWith("早餐：")) return "早餐";
-  if (text.startsWith("午餐：")) return "午餐";
-  if (text.startsWith("晚餐：")) return "晚餐";
-  return "餐點";
-}
-function cardFor(item){
-  const type = mealType(item.meal||"");
-  const title = (item.meal||"").replace(/^早餐：|^午餐：|^晚餐：/, "");
-  const macro = item.p!=null? ` | 營養素：P${fmt(item.p)} C${fmt(item.c)} F${fmt(item.f)}` : "";
-  const tags  = (item.tags||[]).map(t=>`<span class="pill">${t}</span>`).join('');
-  return `<div class="menu-card">
-    <span class="badge" data-type="${type}">${type}</span>
-    <div>
-      <p class="menu-title">${title}</p>
-      <p class="menu-meta">熱量：約 ${fmt(item.kcal)} kcal${macro} ${tags}</p>
-      <p class="note">建議：餐盤 1/2 蔬菜、1/4 蛋白、1/4 全穀；外食可減飯半碗或去皮。</p>
-    </div>
-  </div>`;
-}
-function renderMenuCards(list, pref, title, missing=[]){
-  $('#menuList').innerHTML = list.map(cardFor).join('');
-  const total = list.reduce((a,b)=>a+(b?.kcal||0),0);
-  $('#calories').textContent = `每日總熱量：約 ${fmt(total)} kcal`;
-  const prefText = ({"all":"不限制","veg":"素食","hp":"高蛋白","lc":"低醣"})[pref] || "不限制";
-  $('#menuSummary').innerHTML = `<span class="pill">模式：${title}</span> <span class="pill">偏好：${prefText}</span>`;
-  if (missing.length){
-    const zh = {breakfast:"早餐", lunch:"午餐", dinner:"晚餐"};
-    const msg = `今日 ${missing.map(k=>zh[k]).join("、")} 無符合偏好的餐點，請自行調整或改選「不限制」。`;
-    $('#notice').innerHTML = `<div class="warn">${msg}</div>`;
-  } else { $('#notice').innerHTML = ""; }
-}
-
-/* 依星期：素食嚴格保證三餐；其餘偏好可退回當日預設 */
-function strictPick(typeLabel, todayPref, poolPref){
-  const re = new RegExp('^' + typeLabel);
-  const cand1 = todayPref.filter(i=>re.test(i.meal));
-  if (cand1.length) return cand1[Math.floor(Math.random()*cand1.length)];
-  const cand2 = poolPref.filter(i=>re.test(i.meal));
-  if (cand2.length) return cand2[Math.floor(Math.random()*cand2.length)];
-  return null;
-}
-function pickOneByType(typeLabel, prefPool, fullPool){
-  const re = new RegExp('^' + typeLabel);
-  const fromPref = prefPool.filter(i => re.test(i.meal));
-  if (fromPref.length) return fromPref[Math.floor(Math.random()*fromPref.length)];
-  const fromFull = fullPool.filter(i => re.test(i.meal));
-  return fromFull[Math.floor(Math.random()*fromFull.length)];
-}
-function renderByWeek(pref='all'){
-  const idx = new Date().getDay();
-  const todayFull = menus[idx].map(x=>({...x}));
-  const todayPref = filterByPref(todayFull, pref);
-  const poolPref  = filterByPref(randomPool, pref);
-  let list = [], missing = [];
-  if (pref === 'veg'){
-    const b = strictPick('早餐', todayPref, poolPref);
-    const l = strictPick('午餐', todayPref, poolPref);
-    const d = strictPick('晚餐', todayPref, poolPref);
-    list = [b,l,d];
-    if (!b) missing.push('breakfast');
-    if (!l) missing.push('lunch');
-    if (!d) missing.push('dinner');
-  } else {
-    const b = pickOneByType('早餐', todayPref, todayFull);
-    const l = pickOneByType('午餐', todayPref, todayFull);
-    const d = pickOneByType('晚餐', todayPref, todayFull);
-    list = [b,l,d];
-  }
-  renderMenuCards(list.filter(Boolean), pref, "依星期菜單", missing);
-}
-
-/* 抽籤：避免重複（localStorage） */
-let lastSig = localStorage.getItem('lastMenuSig') || '';
-const sig = list => list.map(i=>i.meal).join('|');
-function renderRandom(pref='all'){
-  const idx = new Date().getDay();
-  const base = menus[idx].map(x=>({...x}));
-  const pool = base.concat(randomPool);
-  const prefPool = filterByPref(pool, pref);
-  const fullPool = pool;
-  let attempt = 0, list;
-  do{
-    const b = pickOneByType('早餐', prefPool, fullPool);
-    const l = pickOneByType('午餐', prefPool, fullPool);
-    const d = pickOneByType('晚餐', prefPool, fullPool);
-    list = [b,l,d].filter(Boolean);
-    attempt++;
-  } while(sig(list)===lastSig && attempt<8);
-  lastSig = sig(list); localStorage.setItem('lastMenuSig', lastSig);
-
-  const missing = [];
-  if (pref==='veg' && list.length<3){
-    const types = [/^早餐/,/^午餐/,/^晚餐/];
-    const got = types.map(re => list.some(x=>re.test(x.meal)));
-    if (!got[0]) missing.push('breakfast');
-    if (!got[1]) missing.push('lunch');
-    if (!got[2]) missing.push('dinner');
-  }
-  renderMenuCards(list, pref, "抽籤菜單", missing);
-}
-
-/* ===== Modal 控制 ===== */
-(function setupModal(){
-  const openBtn = document.getElementById('menuBtn'); const modal = document.getElementById('menuModal'); const closeBtn = document.getElementById('closeMenu');
-  function open(){ modal.setAttribute('open',''); document.body.classList.add('modal-open'); }
-  function close(){ modal.removeAttribute('open'); document.body.classList.remove('modal-open'); }
-  openBtn.addEventListener('click', open);
-  closeBtn.addEventListener('click', close);
-  window.addEventListener('click', e => { if (e.target===modal) close(); });
-})();
-
-/* ===== 初始化 ===== */
-(function init(){
-  document.getElementById('rocYear').textContent = String(new Date().getFullYear() - 1911);
-  document.getElementById('randBtn').addEventListener('click', ()=>{
-    const pref = document.getElementById('dietSelect').value;
-    renderRandom(pref);
-  });
-  document.getElementById('byWeekBtn').addEventListener('click', ()=>{
-    const pref = document.getElementById('dietSelect').value;
-    renderByWeek(pref);
-  });
-  // 首次開啟預設顯示：依星期 / 不限制
-  renderByWeek('all');
-})();
+setupModal("menuBtn","menuModal","closeMenu");
 </script>
 </body>
 </html>
