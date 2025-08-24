@@ -54,6 +54,7 @@
 
     .btn{display:block;width:min(520px,92vw);margin:1rem auto;padding:1rem;font-size:1rem;font-weight:600;
       border:none;border-radius:12px;cursor:pointer;color:#fff;backdrop-filter: blur(6px);}
+    .btn.primary{background:var(--primary);}
     .btn.secondary{background:var(--secondary);}
     .btn:focus-visible{outline:none; box-shadow:var(--focus);}
     .btn:active{transform:translateY(1px);}
@@ -69,11 +70,26 @@
     ul{padding-left:1.1rem;}
     .row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;}
     .grid{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));}
-    .menu-card{border:1px solid var(--glass-brd);border-radius:12px;padding:.75rem .9rem;background:rgba(255,255,255,.85);}
+
+    /* ✅ 菜單卡片固定黑字、加白底提升對比 */
+    .menu-card{
+      border:1px solid var(--glass-brd);
+      border-radius:12px;
+      padding:.75rem .9rem;
+      background:rgba(255,255,255,.95);
+      color:#000;
+    }
     .menu-title{font-weight:700;margin:0 0 .25rem;}
     .note{font-size:.85rem;opacity:.9;margin:.35rem 0 0;}
     .pill{display:inline-block;padding:.35rem .6rem;border-radius:999px;background:rgba(0,0,0,.06);font-size:.82rem;margin:.15rem .25rem 0 0;}
     .tag{font-size:.78rem;opacity:.9;}
+
+    /* ✅ Modal 內按鈕不超出白框 */
+    .modal .btn{
+      width:100%;
+      max-width:100%;
+      margin:.5rem 0;
+    }
   </style>
 </head>
 <body>
@@ -91,6 +107,9 @@
       值班時間：114年08月20日 ～ 114年08月27日
     </small>
   </section>
+
+  <!-- ✅ BMI 回報（保留連結，安全開新分頁） -->
+  <a class="btn primary" href="https://forms.gle/cr3efubbA1WoArfp6" target="_blank" rel="noopener noreferrer">BMI 回報</a>
 
   <button id="menuBtn" type="button" class="btn secondary" aria-haspopup="dialog" aria-controls="menuModal">今日建議減脂菜單</button>
 </main>
@@ -119,8 +138,8 @@
       </label>
 
       <div class="row" style="flex:0 0 100%; gap:.5rem;">
-        <button id="randBtn" type="button" class="btn" style="background:var(--primary);margin:.25rem 0;">抽籤（避免重複）</button>
-        <button id="byWeekBtn" type="button" class="btn secondary" style="margin:.25rem 0;">依星期菜單</button>
+        <button id="randBtn" type="button" class="btn" style="background:var(--primary);">抽籤（避免重複）</button>
+        <button id="byWeekBtn" type="button" class="btn secondary">依星期菜單</button>
       </div>
     </div>
 
