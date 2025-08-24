@@ -188,6 +188,13 @@ for (const [k,v] of Object.entries({ '--hdr-a':theme.a, '--hdr-b':theme.b, '--bg
 // slogans
 const slogans=["均衡飲食，體能常青","多喝水，少喝含糖飲料","睡眠充足，精神百倍","規律運動，強健體魄","拒菸酒檳榔，健康一生","三餐定時定量，少吃宵夜","控制體重，守護戰力","每週至少運動150分鐘","少油少鹽少糖，多蔬果高纖維"];
 document.getElementById('marquee').textContent=slogans[Math.floor(Math.random()*slogans.length)];
+  // 標題動畫：載入即隨機套用
+(() => {
+  const title = document.getElementById('main-title');
+  if (!title) return;
+  const effects = ['title-bounce','title-breath'];
+  title.classList.add(effects[Math.floor(Math.random()*effects.length)]);
+})();
 // duty window
 (function(){
   const el=document.getElementById('dutyWindow'); if(!el) return;
@@ -357,14 +364,6 @@ document.getElementById('byWeekBtn').addEventListener('click',()=>{
   }else{
     document.getElementById('warn').style.display='none';
     render(currentDayList());
-    // ===== 標題動畫：每次載入隨機套用「彈跳」或「呼吸」 =====
-(() => {
-  const title = document.getElementById('main-title');
-  if (!title) return;
-  const effects = ['title-bounce', 'title-breath'];
-  const randomClass = effects[Math.floor(Math.random() * effects.length)];
-  title.classList.add(randomClass);
-})();
   }
 });
 </script>
