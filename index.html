@@ -4,165 +4,633 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>二營健康管理中心</title>
+  <meta name="color-scheme" content="light dark">
   <style>
-    body {
-      font-family: Arial, "Noto Sans TC", sans-serif;
-      margin:0; padding:0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.6), rgba(200,200,255,0.4));
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      color:#222;
+    :root{
+      /* 色票與玻璃樣式 */
+      --ink:#222;
+      --panel: rgba(255,255,255,0.55);
+      --glass-brd: rgba(255,255,255,0.35);
+      --shadow: 0 4px 14px rgba(0,0,0,0.14);
+      --brand: rgba(0,77,153,0.66);
+      --primary: rgba(0,123,255,0.86);
+      --secondary: rgba(40,167,69,0.86);
+      --focus: 0 0 0 3px rgba(0,123,255,0.35);
+
+      /* 背景主題控制 */
+      --bg: radial-gradient(1200px 600px at 10% 10%, #e7f0ff, #dde6ff 30%, #f8fbff 60%);
+      --bg-overlay: none; /* 可覆寫為圖樣/紋理 */
+      --bg-anim: hue-rotate(0deg);
+      --anim-duration: 30s;
     }
-    header {
-      background: rgba(0,77,153,0.6);
+    @media (prefers-color-scheme: dark){
+      :root{
+        --ink:#f2f2f2;
+        --panel: rgba(40,40,50,0.55);
+        --glass-brd: rgba(255,255,255,0.18);
+        --shadow: 0 6px 18px rgba(0,0,0,0.35);
+        --brand: rgba(0,77,153,0.5);
+      }
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, "Noto Sans TC", system-ui, -apple-system, sans-serif;
+      color:var(--ink);
+      min-height:100svh;
+
+      /* 背景：主層＋覆蓋紋理層＋（可選）動畫 */
+      background:
+        var(--bg-overlay),
+        var(--bg);
+      background-attachment: fixed, fixed;
+      background-size: cover, cover;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      animation: bgcycle var(--anim-duration) linear infinite;
+    }
+    @keyframes bgcycle{
+      0%{ filter: var(--bg-anim); }
+      100%{ filter: hue-rotate(360deg); }
+    }
+    @media (prefers-reduced-motion: reduce){
+      body{ animation: none; }
+    }
+
+    header{
+      background: var(--brand);
       color:#fff; padding:1rem; text-align:center;
-      border-bottom:1px solid rgba(255,255,255,0.3);
+      border-bottom:1px solid var(--glass-brd);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      position: sticky; top:0; z-index: 5;
     }
-    h1 { margin:0; }
-    #marquee {
+    h1{ margin:0; font-size:1.5rem; letter-spacing:.05em; }
+
+    /* 跑馬燈／標語 */
+    #marquee{
       overflow:hidden; white-space:nowrap; box-sizing:border-box;
-      animation: marquee 30s linear infinite;
-      font-weight:bold; margin-top:0.5rem;
+      animation: marquee 28s linear infinite;
+      font-weight:700; margin-top:0.5rem;
+      will-change: transform;
     }
-    @keyframes marquee {
+    @keyframes marquee{
       0% { transform:translateX(100%); }
       100% { transform:translateX(-100%); }
     }
-    main { text-align:center; padding:2rem; }
-    #bulletin {
-      max-width:400px; margin:0 auto 2rem auto; padding:1rem;
-      background:rgba(255,255,255,0.5);
-      border-radius:12px; backdrop-filter:blur(10px);
-      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    @media (prefers-reduced-motion: reduce){
+      #marquee{ animation: none; white-space: normal; }
     }
-    #bulletin h2 { margin-top:0; }
-    button {
-      display:block;
-      width:260px;
-      margin:1rem auto; padding:1rem; font-size:1rem;
-      border:none; border-radius:12px; cursor:pointer;
-      backdrop-filter: blur(6px);
+
+    main{ text-align:center; padding:2rem 1rem; }
+    .card{
+      max-width:520px; margin:0 auto 2rem auto; padding:1.25rem 1.25rem;
+      background:var(--panel);
+      border-radius:14px; box-shadow:var(--shadow);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border:1px solid var(--glass-brd); text-align:left;
     }
-    button.primary { background:rgba(0,123,255,0.7); color:#fff; }
-    button.secondary { background:rgba(40,167,69,0.7); color:#fff; }
-    footer {
+    .card h2{ margin:.25rem 0 .5rem; font-size:1.25rem; }
+    .muted{ opacity:.85; font-size:.92rem; }
+
+    .btn{
+      display:block; width:min(520px, 92vw);
+      margin:1rem auto; padding:1rem; font-size:1rem; font-weight:600;
+      border:none; border-radius:12px; cursor:pointer; color:#fff;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    .btn:focus-visible{ outline:none; box-shadow: var(--focus); }
+    .btn.primary{ background:var(--primary); }
+    .btn.secondary{ background:var(--secondary); }
+    .btn.ghost{
+      color:var(--ink);
+      background: rgba(255,255,255,0.75);
+      border:1px solid var(--glass-brd);
+    }
+    .btn:active{ transform: translateY(1px); }
+
+    footer{
       text-align:center; padding:1rem; margin-top:2rem;
       background:rgba(255,255,255,0.3);
-      border-top:1px solid rgba(255,255,255,0.4);
-      backdrop-filter: blur(6px);
+      border-top:1px solid var(--glass-brd);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
     }
-    .modal { display:none; position:fixed; z-index:100; left:0; top:0;
-      width:100%; height:100%; overflow:auto;
-      background:rgba(0,0,0,0.6); }
-    .modal-content {
-      background:rgba(255,255,255,0.95);
-      backdrop-filter: blur(15px);
-      margin:5% auto; padding:20px;
-      border-radius:12px; width:90%; max-width:500px;
+    @supports not ((backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))){
+      header, .card, footer, .btn{ background: rgba(255,255,255,0.92); }
     }
-    .close { color:#333; float:right; font-size:28px; font-weight:bold; cursor:pointer; }
-    .close:hover { color:#000; }
+
+    /* Modal/Dialog */
+    .modal{ display:none; position:fixed; z-index:100; inset:0;
+      overflow:auto; background:rgba(0,0,0,0.6); padding:1rem; }
+    .modal[open]{ display:block; }
+    .modal-content{
+      background:rgba(255,255,255,0.95); color:var(--ink);
+      backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+      margin:4% auto; padding:20px; border-radius:12px;
+      width:min(720px, 92vw); border:1px solid var(--glass-brd); box-shadow:var(--shadow);
+    }
+    .close{ background:none; border:none; font-size:28px; line-height:1; cursor:pointer; color:#333; }
+    .close:hover, .close:focus{ color:#000; outline:none; box-shadow: var(--focus); }
+    ul{ padding-left:1.1rem; }
+    .row{ display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; }
+    .row > *{ flex:1 1 auto; }
+    .pill{
+      display:inline-block; padding:.35rem .6rem; border-radius:999px;
+      background: rgba(0,0,0,.06); font-size:.82rem; margin:.15rem .25rem 0 0;
+    }
+    .grid{
+      display:grid; gap:.75rem;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+    .menu-card{
+      border:1px solid var(--glass-brd); border-radius:12px; padding:.75rem .9rem;
+      background:rgba(255,255,255,.85);
+    }
+    .menu-title{ font-weight:700; margin:0 0 .25rem; }
+    .note{ font-size:.85rem; opacity:.9; margin:.35rem 0 0; }
+    .tag{ font-size:.78rem; opacity:.9; }
+    .kbd{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background:rgba(0,0,0,.06); padding:.1rem .35rem; border-radius:4px; }
+
+    /* 背景主題縮圖 */
+    .theme-swatch{
+      border:1px solid var(--glass-brd); border-radius:12px; padding:.6rem; cursor:pointer;
+      display:flex; align-items:center; gap:.6rem; background: rgba(255,255,255,.7);
+    }
+    .swatch{
+      width:46px; height:30px; border-radius:6px; flex:0 0 46px;
+      background: linear-gradient(135deg,#cfe8ff,#e9f0ff);
+    }
+    .theme-swatch input{ margin-right:.25rem; }
   </style>
 </head>
 <body>
 <header>
   <h1>二營健康管理中心</h1>
-  <div id="marquee">健康標語載入中...</div>
+  <div id="marquee" aria-live="polite">健康標語載入中...</div>
 </header>
-<main>
-  <div id="bulletin">
-    <h2>今日值班人員</h2>
-    <p>少尉鍾俊佑 0938-000-372<br>
-       上士李啟祥 0955-797-745</p>
-    <small>值班時間：114年08月20日 ～ 114年08月27日</small>
-  </div>
 
-  <button class="primary" onclick="window.open('https://forms.gle/cr3efubbA1WoArfp6','_blank')">BMI 回報</button>
-  <button id="menuBtn" class="secondary">今日建議減脂菜單</button>
+<main>
+  <section class="card" aria-labelledby="dutyTitle">
+    <h2 id="dutyTitle">今日值班人員</h2>
+    <p class="contacts">
+      少尉鍾俊佑 <a href="tel:0938000372" aria-label="撥打少尉鍾俊佑 0938-000-372">0938-000-372</a><br>
+      上士李啟祥 <a href="tel:0955797745" aria-label="撥打上士李啟祥 0955-797-745">0955-797-745</a>
+    </p>
+    <small class="muted" id="dutyWindow">值班時間：114年08月20日 ～ 114年08月27日</small>
+  </section>
+
+  <a class="btn primary" role="button" href="https://forms.gle/cr3efubbA1WoArfp6" target="_blank" rel="noopener noreferrer">BMI 回報</a>
+
+  <div class="row" style="max-width:720px;margin:0 auto;">
+    <button id="menuBtn" type="button" class="btn secondary" aria-haspopup="dialog" aria-controls="menuModal">今日建議減脂菜單</button>
+    <button id="themeBtn" type="button" class="btn ghost" aria-haspopup="dialog" aria-controls="themeModal">背景與樣式設定</button>
+  </div>
 </main>
 
-<!-- 減脂菜單 Modal -->
-<div id="menuModal" class="modal">
+<!-- 減脂菜單 Dialog -->
+<div id="menuModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="menuTitle" aria-describedby="menuList">
   <div class="modal-content">
-    <span id="closeMenu" class="close">&times;</span>
-    <h2>今日建議減脂菜單</h2>
-    <ul id="menuList"></ul>
-    <p id="calories"></p>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2 id="menuTitle" style="margin:0;">今日建議減脂菜單</h2>
+      <button id="closeMenu" class="close" type="button" aria-label="關閉視窗">&times;</button>
+    </div>
+
+    <div class="row" style="margin:.5rem 0 1rem;">
+      <label>飲食偏好：
+        <select id="dietSelect" style="padding:.5rem;border-radius:8px;border:1px solid var(--glass-brd);">
+          <option value="all">不限制</option>
+          <option value="veg">素食</option>
+          <option value="hp">高蛋白</option>
+          <option value="lc">低醣</option>
+        </select>
+      </label>
+
+      <label>每天目標熱量(kcal)：
+        <input id="calTarget" type="number" min="800" max="4000" step="50" placeholder="例如 1800"
+          style="padding:.5rem;border-radius:8px;border:1px solid var(--glass-brd);width:9rem;">
+      </label>
+
+      <div class="row" style="flex:0 0 100%; gap:.5rem;">
+        <button id="randBtn" type="button" class="btn primary" style="margin:.25rem 0;">抽籤（避免重複）</button>
+        <button id="byWeekBtn" type="button" class="btn secondary" style="margin:.25rem 0;">依星期菜單</button>
+      </div>
+    </div>
+
+    <div id="menuSummary" class="muted" style="margin:.25rem 0 1rem;"></div>
+    <div id="menuList" class="grid"></div>
+    <p id="calories" class="muted"></p>
+
+    <details style="margin-top:1rem;">
+      <summary>可選加餐（每份 80～150 kcal）</summary>
+      <p class="note">黑咖啡、無糖豆漿、原味優格100g、香蕉小1根、核桃/杏仁10g、海帶芽湯、毛豆80g。</p>
+    </details>
+  </div>
+</div>
+
+<!-- 主題設定 Dialog -->
+<div id="themeModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="themeTitle">
+  <div class="modal-content">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2 id="themeTitle" style="margin:0;">背景與樣式設定</h2>
+      <button id="closeTheme" class="close" type="button" aria-label="關閉視窗">&times;</button>
+    </div>
+
+    <div class="grid" id="themeGrid" style="margin-top:.5rem;">
+      <!-- 以 JS 動態注入主題條目 -->
+    </div>
+
+    <div class="row" style="margin-top:1rem;">
+      <label><input type="checkbox" id="animToggle" /> 啟用背景動畫</label>
+      <small class="muted">（尊重「減少動態」系統偏好時將自動關閉）</small>
+    </div>
   </div>
 </div>
 
 <footer>
-  <p>&copy; 114 二營健康管理中心</p>
+  <p>&copy; <span id="rocYear">114</span> 二營健康管理中心</p>
 </footer>
-<script>
-// 健康標語池
-const slogans = [
-  "均衡飲食，體能常青",
-  "多喝水，少喝含糖飲料",
-  "睡眠充足，精神百倍",
-  "規律運動，強健體魄",
-  "拒菸酒檳榔，健康一生",
-  "三餐定時定量，少吃宵夜",
-  "控制體重，守護戰力",
-  "壓力釋放，心理健康",
-  "每週至少運動150分鐘",
-  "少油少鹽少糖，多蔬果高纖維"
-];
-document.getElementById('marquee').textContent = slogans[Math.floor(Math.random()*slogans.length)];
 
-// 每日菜單 (含熱量)
+<script>
+/* ===================== 資料區：標語與菜單 ===================== */
+/** 標語：分七類，輪播時跨類取樣以提升多樣性 */
+const slogans = {
+  diet: [
+    "三餐定時定量，少吃宵夜",
+    "少油少鹽少糖，多蔬果高纖維",
+    "多喝水，少喝含糖飲料",
+    "外食先看標示，熱量與鈉是關鍵",
+    "份量控制：拳頭大小澱粉、手掌大小蛋白",
+    "吃慢一點，每口嚼10～15下"
+  ],
+  sport: [
+    "每週至少運動150分鐘",
+    "重訓＋有氧雙軌並進，增肌減脂更有效",
+    "暖身10分鐘，降低運動傷害風險",
+    "公差返營也要動一動，保持戰備體能"
+  ],
+  sleep: [
+    "睡眠充足，精神百倍",
+    "固定上床與起床時間，幫助瘦素分泌",
+    "21點後減少咖啡因，有助入睡"
+  ],
+  mind: [
+    "壓力釋放，心理健康",
+    "寫下三件感謝的小事，穩定情緒",
+    "深呼吸 4-4-4-4，緩解焦慮"
+  ],
+  quit: [
+    "拒菸酒檳榔，健康一生",
+    "少喝酒：每週不超過2次、每次不超過2杯",
+    "戒菸三週見成效，體能更上層樓"
+  ],
+  hygiene: [
+    "飯前便後勤洗手，腸胃不鬧脾氣",
+    "餐具與水壺每日清洗，遠離細菌",
+    "流感季節記得接種疫苗"
+  ],
+  safety: [
+    "訓練先檢查場地與裝備，安全第一",
+    "行軍補水不停歇，每20分鐘100～200ml",
+    "烈日當頭補鹽分，避免熱傷害"
+  ],
+};
+
+/** 菜單資料：含標籤（veg素食、hp高蛋白、lc低醣）與營養素 */
 const menus = [
+  // 星期日
   [
-    {meal:"早餐：燕麥＋水煮蛋＋無糖豆漿", kcal:350},
-    {meal:"午餐：雞胸肉＋糙米＋燙青菜", kcal:500},
-    {meal:"晚餐：蔬菜湯＋豆腐＋水果", kcal:300}
+    {meal:"早餐：燕麥＋水煮蛋＋無糖豆漿", kcal:350, p:24, c:40, f:10, tags:["hp"]},
+    {meal:"午餐：雞胸肉＋糙米＋燙青菜",   kcal:520, p:45, c:55, f:12, tags:["hp"]},
+    {meal:"晚餐：蔬菜湯＋豆腐＋水果",     kcal:300, p:18, c:35, f:8,  tags:["veg"]}
   ],
+  // 星期一
   [
-    {meal:"早餐：全麥吐司＋低脂牛奶", kcal:300},
-    {meal:"午餐：鮭魚＋糙米＋青花菜", kcal:550},
-    {meal:"晚餐：蒸蛋＋炒菠菜＋水果", kcal:320}
+    {meal:"早餐：全麥吐司＋低脂牛奶",     kcal:320, p:16, c:45, f:7,  tags:[]},
+    {meal:"午餐：鮭魚＋糙米＋青花菜",     kcal:560, p:40, c:55, f:16, tags:["hp","lc"]},
+    {meal:"晚餐：蒸蛋＋炒菠菜＋水果",     kcal:330, p:22, c:25, f:12, tags:["lc"]}
   ],
+  // 星期二
   [
-    {meal:"早餐：無糖優格＋堅果＋水果", kcal:280},
-    {meal:"午餐：雞腿排＋糙米＋時蔬", kcal:520},
-    {meal:"晚餐：豆漿＋沙拉", kcal:250}
+    {meal:"早餐：無糖優格＋堅果＋水果",   kcal:300, p:18, c:28, f:12, tags:["lc"]},
+    {meal:"午餐：雞腿排＋糙米＋時蔬",     kcal:540, p:42, c:55, f:15, tags:["hp"]},
+    {meal:"晚餐：豆漿＋雞胸沙拉",         kcal:290, p:30, c:16, f:8,  tags:["hp","lc"]}
   ],
+  // 星期三
   [
-    {meal:"早餐：水煮蛋＋燕麥粥", kcal:330},
-    {meal:"午餐：牛肉片＋地瓜＋青菜", kcal:560},
-    {meal:"晚餐：味噌湯＋豆腐＋水果", kcal:310}
+    {meal:"早餐：水煮蛋＋燕麥粥",         kcal:340, p:22, c:42, f:9,  tags:["hp"]},
+    {meal:"午餐：牛肉片＋地瓜＋青菜",     kcal:560, p:38, c:55, f:16, tags:["hp"]},
+    {meal:"晚餐：味噌湯＋豆腐＋水果",     kcal:310, p:20, c:30, f:8,  tags:["veg","lc"]}
   ],
+  // 星期四
   [
-    {meal:"早餐：全麥饅頭＋豆漿", kcal:340},
-    {meal:"午餐：雞胸肉＋糙米＋燙青菜", kcal:500},
-    {meal:"晚餐：蔬菜湯＋雞蛋＋水果", kcal:280}
+    {meal:"早餐：全麥饅頭＋豆漿",         kcal:360, p:18, c:55, f:8,  tags:[]},
+    {meal:"午餐：菇菇時蔬炒麵＋水煮蛋",   kcal:520, p:24, c:75, f:12, tags:["veg"]},
+    {meal:"晚餐：蔬菜湯＋雞蛋＋水果",     kcal:290, p:16, c:28, f:9,  tags:["lc"]}
   ],
+  // 星期五
   [
-    {meal:"早餐：水煮蛋＋黑咖啡＋水果", kcal:260},
-    {meal:"午餐：鮭魚＋地瓜＋青菜", kcal:540},
-    {meal:"晚餐：豆漿＋炒青菜", kcal:270}
+    {meal:"早餐：水煮蛋＋黑咖啡＋水果",   kcal:260, p:16, c:24, f:8,  tags:["lc"]},
+    {meal:"午餐：鮭魚＋地瓜＋青菜",       kcal:540, p:38, c:48, f:16, tags:["hp","lc"]},
+    {meal:"晚餐：豆漿＋炒青菜",           kcal:270, p:16, c:20, f:9,  tags:["veg","lc"]}
   ],
+  // 星期六
   [
-    {meal:"早餐：燕麥片＋堅果＋牛奶", kcal:360},
-    {meal:"午餐：雞胸肉＋糙米＋燙青菜", kcal:500},
-    {meal:"晚餐：蔬菜湯＋豆腐＋水果", kcal:310}
+    {meal:"早餐：燕麥片＋堅果＋牛奶",     kcal:370, p:18, c:48, f:12, tags:[]},
+    {meal:"午餐：雞胸肉便當（半飯）＋時蔬",kcal:500, p:42, c:45, f:12, tags:["hp","lc"]},
+    {meal:"晚餐：蔬菜湯＋豆腐＋水果",     kcal:310, p:20, c:30, f:8,  tags:["veg","lc"]}
   ]
 ];
-const todayMenu = menus[new Date().getDay()];
-document.getElementById("menuList").innerHTML = todayMenu.map(i => `<li>${i.meal} (${i.kcal} kcal)</li>`).join("");
-document.getElementById("calories").textContent = "每日總熱量：約 " + todayMenu.reduce((a,b)=>a+b.kcal,0) + " kcal";
 
-// Modal 控制
-function setupModal(btnId, modalId, closeId) {
-  const btn = document.getElementById(btnId);
-  const modal = document.getElementById(modalId);
-  const span = document.getElementById(closeId);
-  btn.onclick = () => { modal.style.display = "block"; }
-  span.onclick = () => { modal.style.display = "none"; }
-  window.addEventListener("click", e => { if (e.target==modal) modal.style.display="none"; });
+/* 額外「隨機池」：提高多樣性（會混入抽籤結果） */
+const randomPool = [
+  {meal:"早餐：地瓜200g＋無糖優格", kcal:320, p:14, c:55, f:6, tags:["lc"]},
+  {meal:"午餐：火雞胸沙拉＋玉米半根", kcal:420, p:36, c:35, f:12, tags:["hp","lc"]},
+  {meal:"晚餐：蒸鱈魚＋花椰菜＋山藥", kcal:340, p:32, c:28, f:8, tags:["hp","lc"]},
+  {meal:"早餐：豆漿燕麥香蕉昔", kcal:360, p:18, c:58, f:7, tags:[]},
+  {meal:"午餐：日式照燒豆腐丼（半飯）", kcal:480, p:24, c:65, f:12, tags:["veg"]},
+  {meal:"晚餐：雞絲小黃瓜涼拌＋皮蛋豆腐", kcal:300, p:25, c:14, f:12, tags:["hp","lc"]},
+];
+
+/* ===================== UI 元件與共用 ===================== */
+const $ = (s)=>document.querySelector(s);
+const $$ = (s)=>document.querySelectorAll(s);
+const fmt = (n)=> (n ?? 0).toLocaleString('zh-Hant-TW');
+const clamp = (n,min,max)=> Math.max(min, Math.min(max, n));
+
+/* 標語輪播（尊重減少動態、不重複選取直到用罄） */
+function buildSloganQueue(){
+  const groups = Object.values(slogans);
+  const bucket = [];
+  // 交錯取樣：每個類別輪流取1句，直到最短組用完
+  const maxLen = Math.max(...groups.map(g=>g.length));
+  for (let i=0;i<maxLen;i++){
+    for (const g of groups){
+      if (g[i]) bucket.push(g[i]);
+    }
+  }
+  // 打散
+  for (let i=bucket.length-1;i>0;i--){
+    const j = Math.floor(Math.random()* (i+1));
+    [bucket[i], bucket[j]] = [bucket[j], bucket[i]];
+  }
+  return bucket;
 }
-setupModal("menuBtn","menuModal","closeMenu");
+let sloganQueue = buildSloganQueue();
+function nextSlogan(){
+  if (sloganQueue.length === 0) sloganQueue = buildSloganQueue();
+  return sloganQueue.pop();
+}
+const marqueeEl = $('#marquee');
+function setSloganText(){
+  marqueeEl.textContent = nextSlogan();
+}
+setSloganText();
+
+/* ===================== 菜單產生 ===================== */
+const menuListEl = $('#menuList');
+const caloriesEl = $('#calories');
+const menuSummaryEl = $('#menuSummary');
+
+function cardFor(item){
+  const macro = `P${fmt(item.p)} C${fmt(item.c)} F${fmt(item.f)}`;
+  const tags = (item.tags||[]).map(t=>`<span class="pill">${t}</span>`).join('');
+  return `<div class="menu-card">
+    <p class="menu-title">${item.meal}</p>
+    <div class="tag">熱量：約 ${fmt(item.kcal)} kcal　|　營養素：${macro} ${tags}</div>
+    <p class="note">建議：餐盤 1/2 蔬菜、1/4 蛋白、1/4 全穀根莖；外食可減飯半碗或去皮。</p>
+  </div>`;
+}
+
+function sumKcal(list){ return list.reduce((a,b)=> a + (b.kcal||0), 0); }
+function filterByPref(items, pref){
+  if (pref==='veg') return items.filter(i=>i.tags?.includes('veg'));
+  if (pref==='hp')  return items.filter(i=>i.tags?.includes('hp'));
+  if (pref==='lc')  return items.filter(i=>i.tags?.includes('lc'));
+  return items;
+}
+
+/* 依星期（與你原本相容：週日=0） */
+function renderByWeek(pref='all', targetKcal=null){
+  const idx = new Date().getDay();
+  const today = menus[idx].map(x=>({...x}));
+  const picked = filterByPref(today, pref);
+  const finalList = picked.length ? picked : today; // 若無符合偏好，退回預設
+  renderMenuCards(finalList, pref, targetKcal, "依星期菜單");
+}
+
+/* 抽籤（從當週菜單 + 隨機池混合，並避免與上次相同組合） */
+function renderRandom(pref='all', targetKcal=null){
+  const idx = new Date().getDay();
+  const base = menus[idx].map(x=>({...x}));
+  const pool = base.concat(randomPool);
+  const filtered = filterByPref(pool, pref);
+  const candidates = filtered.length ? filtered : pool;
+
+  // 產生 3 份（早/午/晚），避免重複
+  let lastSig = localStorage.getItem('lastMenuSig') || '';
+  let attempt = 0, list;
+  do{
+    const breakfast = candidates.filter(i=>/早餐/.test(i.meal));
+    const lunch     = candidates.filter(i=>/午餐/.test(i.meal));
+    const dinner    = candidates.filter(i=>/晚餐/.test(i.meal));
+    const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+    list = [pick(breakfast)||pick(candidates), pick(lunch)||pick(candidates), pick(dinner)||pick(candidates)];
+    attempt++;
+  } while(sig(list)===lastSig && attempt<8);
+
+  localStorage.setItem('lastMenuSig', sig(list));
+  renderMenuCards(list, pref, targetKcal, "抽籤菜單");
+}
+function sig(list){ return list.map(i=>i.meal).join('|'); }
+
+function renderMenuCards(list, pref, targetKcal, title){
+  menuListEl.innerHTML = list.map(cardFor).join('');
+  const total = sumKcal(list);
+  caloriesEl.textContent = `每日總熱量：約 ${fmt(total)} kcal`;
+  const prefText = ({"all":"不限制","veg":"素食","hp":"高蛋白","lc":"低醣"})[pref] || "不限制";
+
+  let gap = '';
+  if (targetKcal){
+    const delta = total - targetKcal;
+    const status = delta>100 ? `高於目標 ${fmt(delta)} kcal（可減少澱粉或加強運動）`
+                 : delta<-100 ? `低於目標 ${fmt(-delta)} kcal（可加水果/乳製或小點心）`
+                 : `貼近目標（±100 kcal 內）`;
+    gap = `｜與目標差距：${status}`;
+  }
+  menuSummaryEl.innerHTML = `<span class="pill">模式：${title}</span> <span class="pill">偏好：${prefText}</span> ${gap}`;
+}
+
+/* ===================== Modal 共用（焦點圈閉、Esc 關閉） ===================== */
+function setupModal(btnId, modalId, closeId){
+  const openBtn = $(btnId);
+  const modal = $(modalId);
+  const closeBtn = $(closeId);
+  const content = modal.querySelector('.modal-content');
+  let lastFocused = null;
+
+  function open(){
+    lastFocused = document.activeElement;
+    modal.setAttribute('open','');
+    const focusable = content.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    (focusable[0] || closeBtn).focus();
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('click', onBackdrop);
+  }
+  function close(){
+    modal.removeAttribute('open');
+    window.removeEventListener('keydown', onKey);
+    window.removeEventListener('click', onBackdrop);
+    if (lastFocused) lastFocused.focus();
+  }
+  function onKey(e){
+    if (e.key==='Escape'){ e.preventDefault(); close(); }
+    if (e.key==='Tab'){
+      const f = [...content.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(el=>!el.disabled && el.offsetParent!==null);
+      if (!f.length) return;
+      const first=f[0], last=f[f.length-1];
+      if (e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+    }
+  }
+  function onBackdrop(e){ if (e.target===modal) close(); }
+
+  openBtn.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  return {open, close};
+}
+const menuModalCtl  = setupModal('#menuBtn', '#menuModal', '#closeMenu');
+const themeModalCtl = setupModal('#themeBtn','#themeModal','#closeTheme');
+
+/* ===================== 背景主題系統 ===================== */
+const THEMES = [
+  {
+    key:'daynight',
+    name:'動態日夜漸層',
+    desc:'依時段生成天空色溫，並可加上柔和色相循環動畫。',
+    bg: ()=> {
+      const hour = new Date().getHours();
+      // 04-08 曙光、08-16 日間、16-19 黃昏、19-04 夜色
+      if (hour>=4 && hour<8)   return 'linear-gradient(135deg,#f3efe6,#c7dff8 40%,#b9d6ff 70%)';
+      if (hour>=8 && hour<16)  return 'linear-gradient(135deg,#e7f0ff,#d7ecff 40%,#f6fbff 70%)';
+      if (hour>=16 && hour<19) return 'linear-gradient(135deg,#ffd7b5,#ffe9c6 40%,#cfe0ff 80%)';
+      return 'radial-gradient(1200px 600px at 10% 10%, #0f1a2b, #1f2a44 40%, #2a3652 70%)';
+    },
+    overlay:'none',
+    anim:true
+  },
+  {
+    key:'navyGlass',
+    name:'軍藍玻璃',
+    desc:'沉穩軍藍底＋玻璃擬態，正式簡潔。',
+    bg:'linear-gradient(135deg,#0b2a4a,#0e3a6a 50%, #124b86)',
+    overlay:'none',
+    anim:false
+  },
+  {
+    key:'camouflage',
+    name:'叢林迷彩',
+    desc:'低飽和迷彩紋理，戶外訓練風格。',
+    bg:'linear-gradient(135deg,#ccd5c3,#9fb29a 45%, #7c8f7a)',
+    overlay:`url("data:image/svg+xml;utf8,
+      <svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160' opacity='.25'>
+        <defs>
+          <filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1'/><feColorMatrix values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 .35 0'/></filter>
+        </defs>
+        <rect width='100%' height='100%' fill='none' filter='url(%23f)'/>
+      </svg>")`,
+    anim:false
+  },
+  {
+    key:'grid',
+    name:'極簡網格',
+    desc:'高可讀性網格紋理，適合資訊面板。',
+    bg:'linear-gradient(135deg,#f5f8ff,#eaf1ff 60%,#ffffff)',
+    overlay:`linear-gradient(rgba(0,0,0,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.05) 1px, transparent 1px)`,
+    extra: ()=> {
+      document.body.style.backgroundSize = '20px 20px, 20px 20px, cover';
+    },
+    anim:false
+  }
+];
+
+function applyTheme(key, persist=true){
+  const t = THEMES.find(x=>x.key===key) || THEMES[0];
+  const bg = typeof t.bg === 'function' ? t.bg() : t.bg;
+  document.body.style.setProperty('--bg', bg);
+  document.body.style.setProperty('--bg-overlay', t.overlay || 'none');
+  document.body.style.setProperty('--anim-duration', t.anim ? '30s' : '0s');
+  document.body.style.setProperty('--bg-anim', t.anim ? 'hue-rotate(0deg)' : 'hue-rotate(0deg)');
+  if (t.extra) t.extra();
+  if (persist) localStorage.setItem('themeKey', t.key);
+}
+function initThemePanel(){
+  const grid = $('#themeGrid');
+  grid.innerHTML = THEMES.map(t=>`
+    <label class="theme-swatch">
+      <input type="radio" name="theme" value="${t.key}">
+      <div class="swatch" style="background:${typeof t.bg==='function' ? t.bg() : t.bg};"></div>
+      <div>
+        <div><strong>${t.name}</strong></div>
+        <div class="muted">${t.desc}</div>
+      </div>
+    </label>
+  `).join('');
+  // 綁定
+  grid.addEventListener('change', e=>{
+    if (e.target.name==='theme'){
+      applyTheme(e.target.value);
+    }
+  });
+  // 動畫開關
+  const animToggle = $('#animToggle');
+  const saved = localStorage.getItem('animEnabled');
+  if (saved !== null) animToggle.checked = saved === '1';
+  document.body.style.setProperty('--anim-duration', animToggle.checked ? '30s':'0s');
+  animToggle.addEventListener('change', ()=>{
+    document.body.style.setProperty('--anim-duration', animToggle.checked ? '30s':'0s');
+    localStorage.setItem('animEnabled', animToggle.checked ? '1':'0');
+  });
+
+  // 載入已選主題
+  const savedKey = localStorage.getItem('themeKey') || 'daynight';
+  applyTheme(savedKey, false);
+  const radio = grid.querySelector(`input[value="${savedKey}"]`);
+  if (radio) radio.checked = true;
+}
+
+/* ===================== 初始流程與事件 ===================== */
+(function init(){
+  // 標語每 40s 換一次（尊重減少動態則不自動換）
+  const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (!media.matches){
+    setInterval(()=> setSloganText(), 40000);
+  }
+
+  // 年度（民國）
+  $('#rocYear').textContent = String(new Date().getFullYear() - 1911);
+
+  // 菜單對話框互動
+  $('#randBtn').addEventListener('click', ()=>{
+    const pref = $('#dietSelect').value;
+    const calT = parseInt($('#calTarget').value || '0', 10); 
+    const target = Number.isFinite(calT) ? clamp(calT, 800, 4000) : null;
+    renderRandom(pref, target);
+  });
+  $('#byWeekBtn').addEventListener('click', ()=>{
+    const pref = $('#dietSelect').value;
+    const calT = parseInt($('#calTarget').value || '0', 10); 
+    const target = Number.isFinite(calT) ? clamp(calT, 800, 4000) : null;
+    renderByWeek(pref, target);
+  });
+
+  // 開啟即預設呈現本日菜單
+  renderByWeek('all', null);
+
+  // 主題面板
+  initThemePanel();
+})();
+
 </script>
 </body>
 </html>
