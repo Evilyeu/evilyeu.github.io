@@ -5,168 +5,167 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>二營健康管理中心</title>
   <style>
-    body {
-      font-family: Arial, "Noto Sans TC", sans-serif;
-      margin:0; padding:0;
-      background: linear-gradient(180deg, #0f5fb6 0%, #2382e0 50%, #e6f1ff 100%);
-      color:#222;
-    }
-    header {
-      color:#fff; padding:1rem; text-align:center;
-      border-bottom:1px solid rgba(255,255,255,0.3);
-      backdrop-filter: blur(6px);
-    }
-    h1 { margin:0; font-size:1.4rem; }
-    #marquee {
-      overflow:hidden; white-space:nowrap;
-      animation: marquee 30s linear infinite;
-      font-weight:bold; margin-top:0.3rem; font-size:0.9rem;
-    }
-    @keyframes marquee {
-      0% { transform:translateX(100%); }
-      100% { transform:translateX(-100%); }
-    }
-    main { text-align:center; padding:1.2rem; }
+    /* Reset & safety */
+    *,*::before,*::after{ box-sizing:border-box; }
+    html,body{ width:100%; max-width:100%; overflow-x:hidden; -webkit-text-size-adjust:100%; }
+    body{ margin:0; font-family: Arial,"Noto Sans TC",system-ui,-apple-system,sans-serif;
+          color:#111; min-height:100svh; display:flex; flex-direction:column;
+          background: linear-gradient(180deg,#0f5fb6 0%, #2382e0 52%, #e6f1ff 100%); }
+
+    header{ color:#fff; padding:1rem; text-align:center; border-bottom:1px solid rgba(255,255,255,.3); }
+    h1{ margin:0; font-size:1.5rem; }
+    #marquee{ overflow:hidden; white-space:nowrap; animation:marquee 28s linear infinite; font-weight:700; margin-top:.4rem; }
+    @keyframes marquee{ 0%{transform:translateX(100%);} 100%{transform:translateX(-100%);} }
+    @media (prefers-reduced-motion:reduce){ #marquee{ animation:none; white-space:normal; } }
+
+    main{ padding:1.2rem 0 2rem; flex:1; }
     .wrap{ max-width:520px; margin:0 auto; padding:0 16px; }
-    #bulletin {
-      margin:0 auto 1.2rem auto; padding:1rem;
-      background:#fff; color:#000;
-      border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.12);
-      text-align:left;
-    }
-    #bulletin h2 { margin-top:0; font-size:1.1rem; }
-    .btn {
-      display:inline-flex; align-items:center; justify-content:center;
-      width:100%; margin:0.6rem 0; padding:0.9rem;
-      font-size:1rem; font-weight:700;
-      border:none; border-radius:12px; cursor:pointer;
-      color:#fff; box-sizing:border-box;
-      box-shadow:0 2px 6px rgba(0,0,0,0.15);
-      transition: filter .2s, transform .1s;
-    }
-    .btn:hover { filter:brightness(1.04); }
-    .btn:active { transform:translateY(1px); }
-    .primary { background:#0f6ad8; }
-    .secondary { background:#2cb36c; }
-    footer {
-      text-align:center; padding:0.8rem; margin-top:2rem;
-      font-size:0.75rem; color:#444;
-    }
+
+    .card{ background:rgba(255,255,255,.75); border:1px solid #e5e7eb; border-radius:16px; padding:1.25rem;
+           box-shadow:0 8px 24px rgba(0,0,0,.08); backdrop-filter:blur(6px); text-align:left; margin-bottom:1.6rem; }
+    .card h2{ margin:.2rem 0 .6rem; font-size:1.25rem; }
+
+    /* Buttons (outer & modal same) */
+    .btn{ display:inline-flex; align-items:center; justify-content:center;
+          width:100%; margin:.8rem 0; padding:.95rem 1rem; font-size:1rem; font-weight:800;
+          border:none; border-radius:14px; color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.12); }
+    .primary{ background:#0f6ad8; } .secondary{ background:#2cb36c; }
+
+    footer{ text-align:center; padding:.7rem; margin-top:auto; background:rgba(255,255,255,.35);
+            border-top:1px solid rgba(255,255,255,.35); font-size:.8rem; }
+
     /* Modal */
-    .modal { display:none; position:fixed; z-index:100; left:0; top:0;
-      width:100%; height:100%; overflow:auto;
-      background:rgba(0,0,0,0.55);
-      padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)) 12px;
-    }
-    .modal-content {
-      background:#fff; color:#000;
-      margin:0 auto; padding:20px;
-      border-radius:16px; width:calc(100% - 24px); max-width:720px;
-      max-height:calc(100svh - 48px);
+    .modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
+            padding:max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)) 12px; z-index:100; }
+    .modal[open]{ display:block; }
+    .modal-content{
+      background:#fff; color:#000; width:calc(100% - 24px); max-width:720px;
+      margin:0 auto; padding:16px; border-radius:16px; border:1px solid #e5e7eb;
+      max-height:calc(100svh - 2*max(12px, env(safe-area-inset-top)) - 24px);
       overflow:auto; -webkit-overflow-scrolling:touch;
-      box-shadow:0 4px 16px rgba(0,0,0,0.2);
+      box-shadow:0 10px 28px rgba(0,0,0,.2);
     }
-    .close { color:#333; float:right; font-size:28px; font-weight:bold; cursor:pointer; }
-    .close:hover { color:#000; }
-    .row-buttons{ display:flex; gap:0.75rem; margin:0.5rem 0; }
-    .row-buttons .btn{ flex:1; margin:0; }
+    .close{ background:none; border:none; font-size:28px; float:right; cursor:pointer; line-height:1; }
+
+    .row{ display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; }
+    .modal-actions{ display:flex; gap:.75rem; width:100%; }
+    .modal-actions .btn{ flex:1; margin:0; min-width:0; } /* min-width:0 防止 flex 溢出 */
+
+    /* Card-style menu layout */
+    .grid{ display:grid; gap:.8rem; grid-template-columns:1fr; }
+    .menu{ border:1px solid #e5e7eb; border-radius:14px; padding:1rem; background:#fff; color:#000; }
+    .menu h3{ margin:.2rem 0 .4rem; font-size:1.1rem; }
+    .meta{ font-size:.92rem; color:#334155; }
+    .badge{ display:inline-block; padding:.25rem .6rem; margin-right:.4rem; border-radius:999px; font-size:.78rem; border:1px solid #e5e7eb; background:#f8fafc; color:#475569; }
+    .note{ margin:.4rem 0 0; font-size:.85rem; color:#475569; }
+    #calories{ margin-top:.4rem; font-weight:700; }
   </style>
 </head>
 <body>
 <header>
-  <h1>📍 二營健康管理中心</h1>
+  <h1>二營健康管理中心</h1>
   <div id="marquee">健康標語載入中...</div>
 </header>
 
 <main>
   <div class="wrap">
-    <div id="bulletin">
+    <section class="card">
       <h2>今日值班人員</h2>
-      <p>少尉鍾俊佑 0938-000-372<br>
-         上士李啟祥 0955-797-745</p>
-      <small id="dutyWindow" data-auto="1" data-cycle="wed" data-length="7">
-        值班時間：114年08月20日 ～ 114年08月27日
-      </small>
-    </div>
+      <p>少尉鍾俊佑 <a href="tel:0938000372">0938-000-372</a><br>上士李啟祥 <a href="tel:0955797745">0955-797-745</a></p>
+      <small id="dutyWindow" data-auto="1" data-cycle="wed" data-length="7">值班時間：114年08月20日 ～ 114年08月27日</small>
+    </section>
 
     <button id="bmiBtn" class="btn primary" type="button">BMI 回報</button>
     <button id="menuBtn" class="btn secondary" type="button">今日建議菜單</button>
   </div>
 </main>
 
-<!-- 減脂菜單 Modal -->
-<div id="menuModal" class="modal">
+<div id="menuModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
   <div class="modal-content">
-    <span id="closeMenu" class="close">&times;</span>
-    <h2>今日建議菜單</h2>
-    <div class="row-buttons">
-      <button id="randBtn" class="btn primary">抽籤（避免重複）</button>
-      <button id="byWeekBtn" class="btn secondary">依星期菜單</button>
+    <button id="closeMenu" class="close" aria-label="關閉">&times;</button>
+    <h2 id="menuTitle">今日建議菜單</h2>
+
+    <div class="row" style="margin:.3rem 0 .8rem">
+      <div class="modal-actions">
+        <button id="randBtn" class="btn primary" type="button">抽籤（避免重複）</button>
+        <button id="byWeekBtn" class="btn secondary" type="button">依星期菜單</button>
+      </div>
     </div>
-    <ul id="menuList"></ul>
+
+    <div id="menuList" class="grid"></div>
     <p id="calories"></p>
   </div>
 </div>
 
-<footer>
-  <p>&copy; 114 二營健康管理中心</p>
-</footer>
+<footer>&copy; <span id="rocYear"></span> 二營健康管理中心</footer>
 
 <script>
-// Header 隨機色池
-const headerColors = [
-  "linear-gradient(135deg, #0f5fb6, #2382e0)",
-  "linear-gradient(135deg, #1d976c, #93f9b9)",
-  "linear-gradient(135deg, #ff512f, #dd2476)",
-  "linear-gradient(135deg, #654ea3, #eaafc8)"
+// 隨機 header 色
+const headerColors=[
+  "linear-gradient(135deg,#0f5fb6,#2382e0)",
+  "linear-gradient(135deg,#1d976c,#93f9b9)",
+  "linear-gradient(135deg,#ff512f,#dd2476)",
+  "linear-gradient(135deg,#654ea3,#eaafc8)"
 ];
-document.querySelector("header").style.background =
-  headerColors[Math.floor(Math.random() * headerColors.length)];
+document.querySelector("header").style.background=headerColors[Math.floor(Math.random()*headerColors.length)];
 
-// 健康標語池
-const slogans = [
-  "均衡飲食，體能常青","多喝水，少喝含糖飲料","睡眠充足，精神百倍",
-  "規律運動，強健體魄","拒菸酒檳榔，健康一生","三餐定時定量，少吃宵夜",
-  "控制體重，守護戰力","壓力釋放，心理健康","每週至少運動150分鐘",
-  "少油少鹽少糖，多蔬果高纖維"
+// 標語
+const slogans=["均衡飲食，體能常青","多喝水，少喝含糖飲料","睡眠充足，精神百倍","規律運動，強健體魄","拒菸酒檳榔，健康一生","三餐定時定量，少吃宵夜","控制體重，守護戰力","壓力釋放，心理健康","每週至少運動150分鐘","少油少鹽少糖，多蔬果高纖維"];
+document.getElementById('marquee').textContent=slogans[Math.floor(Math.random()*slogans.length)];
+
+// 值班（週三起算）
+(function(){
+  const el=document.getElementById('dutyWindow'); if(!el) return;
+  const pad2=n=>String(n).padStart(2,'0'); const toRoc=d=>`${d.getFullYear()-1911}年${pad2(d.getMonth()+1)}月${pad2(d.getDate())}日`;
+  if(el.dataset.auto==='1'){
+    const map={sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6};
+    const startDow=map[(el.dataset.cycle||'wed')]; const len=parseInt(el.dataset.length||'7',10);
+    const now=new Date(); const diff=(now.getDay()-startDow+7)%7;
+    const s=new Date(now); s.setDate(now.getDate()-diff); s.setHours(0,0,0,0);
+    const e=new Date(s); e.setDate(s.getDate()+len); e.setHours(23,59,59,999);
+    el.textContent=`值班時間：${toRoc(s)} ～ ${toRoc(e)}`;
+  }
+  document.getElementById('rocYear').textContent=String(new Date().getFullYear()-1911);
+})();
+
+// 資料（示例）
+const today = new Date().getDay();
+const weekly = [
+  [{t:"早餐", name:"全麥吐司＋低脂牛奶", kcal:300},
+   {t:"午餐", name:"鮭魚＋糙米＋青花菜", kcal:550, tags:["hp","lc"]},
+   {t:"晚餐", name:"蒸蛋＋炒菠菜＋水果", kcal:320, tags:["veg","lc"]}],
+  [{t:"早餐", name:"燕麥＋水煮蛋＋無糖豆漿", kcal:350, tags:["hp"]},
+   {t:"午餐", name:"雞胸肉＋糙米＋燙青菜", kcal:500, tags:["hp"]},
+   {t:"晚餐", name:"蔬菜湯＋豆腐＋水果", kcal:300, tags:["veg"]}]
 ];
-document.getElementById('marquee').textContent =
-  slogans[Math.floor(Math.random()*slogans.length)];
+const menus = weekly[today % weekly.length];
 
-// 開啟 BMI 表單
-document.getElementById('bmiBtn').addEventListener('click', () => {
-  window.open('https://forms.gle/cr3efubbA1WoArfp6','_blank','noopener');
-});
-
-// 每日菜單 (範例)
-const menus = [
-  [
-    {meal:"早餐：燕麥＋水煮蛋＋無糖豆漿", kcal:350},
-    {meal:"午餐：雞胸肉＋糙米＋燙青菜", kcal:500},
-    {meal:"晚餐：蔬菜湯＋豆腐＋水果", kcal:300}
-  ],
-  [
-    {meal:"早餐：全麥吐司＋低脂牛奶", kcal:300},
-    {meal:"午餐：鮭魚＋糙米＋青花菜", kcal:550},
-    {meal:"晚餐：蒸蛋＋炒菠菜＋水果", kcal:320}
-  ]
-];
-const todayMenu = menus[new Date().getDay() % menus.length];
-document.getElementById("menuList").innerHTML =
-  todayMenu.map(i => `<li>${i.meal} (${i.kcal} kcal)</li>`).join("");
-document.getElementById("calories").textContent =
-  "每日總熱量：約 " + todayMenu.reduce((a,b)=>a+b.kcal,0) + " kcal";
+function render(list){
+  const mapBadge={早餐:"#ffeee6",午餐:"#e6f0ff",晚餐:"#e6fff2"};
+  document.getElementById("menuList").innerHTML = list.map(i => `
+    <article class="menu">
+      <span class="badge" style="background:${mapBadge[i.t]||'#f8fafc'}">${i.t}</span>
+      <h3>${i.name}</h3>
+      <p class="meta">熱量：約 ${i.kcal} kcal ${(i.tags||[]).map(t=>`<span class='badge'>${t}</span>`).join('')}</p>
+      <p class="note">建議：餐盤 1/2 蔬菜、1/4 蛋白、1/4 全穀；外食可減飯半碗或去皮。</p>
+    </article>`).join("");
+  const total=list.reduce((a,b)=>a+b.kcal,0);
+  document.getElementById("calories").textContent=`每日總熱量：約 ${total} kcal`;
+}
+render(menus);
 
 // Modal 控制
-function setupModal(btnId, modalId, closeId) {
-  const btn = document.getElementById(btnId);
-  const modal = document.getElementById(modalId);
-  const span = document.getElementById(closeId);
-  btn.onclick = () => { modal.style.display = "block"; document.body.classList.add("modal-open"); }
-  span.onclick = () => { modal.style.display = "none"; document.body.classList.remove("modal-open"); }
-  window.addEventListener("click", e => { if (e.target==modal){ modal.style.display="none"; document.body.classList.remove("modal-open"); }});
-}
-setupModal("menuBtn","menuModal","closeMenu");
+const modal=document.getElementById('menuModal');
+document.getElementById('menuBtn').addEventListener('click',()=>{ modal.setAttribute('open',''); document.body.style.overflow='hidden'; });
+document.getElementById('closeMenu').addEventListener('click',()=>{ modal.removeAttribute('open'); document.body.style.overflow=''; });
+window.addEventListener('click',e=>{ if(e.target===modal){ modal.removeAttribute('open'); document.body.style.overflow=''; }});
+
+// 抽籤/依星期（示例邏輯）
+document.getElementById('randBtn').addEventListener('click',()=>{
+  const shuffled=[...menus].sort(()=>Math.random()-0.5);
+  render(shuffled);
+});
+document.getElementById('byWeekBtn').addEventListener('click',()=>render(menus));
 </script>
 </body>
 </html>
