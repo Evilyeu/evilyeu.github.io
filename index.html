@@ -30,7 +30,7 @@
       }
     }
 
-    /* ✅ 禁止水平捲動，避免任何元件外溢 */
+    /* 禁止水平捲動 */
     html, body { max-width:100%; overflow-x:hidden; -webkit-text-size-adjust:100%; }
     header, main, footer { max-width:100vw; }
     #marquee { display:block; width:100%; overflow:hidden; contain:content; }
@@ -67,14 +67,14 @@
 
     footer{text-align:center;padding:1rem;margin-top:2rem;background:rgba(255,255,255,0.3);border-top:1px solid var(--glass-brd);}
 
-    /* ✅ Modal */
+    /* Modal */
     .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);padding:1rem;z-index:100;}
     .modal[open]{display:block;}
     .modal-content{
-      background:rgba(255,255,255,0.95); color:#000;        /* 固定黑字 */
+      background:rgba(255,255,255,0.95); color:#000;
       margin:4% auto; padding:20px; border-radius:12px;
       width:min(720px,92vw); border:1px solid var(--glass-brd); box-shadow:var(--shadow);
-      max-height: calc(100svh - 2rem);                       /* ✅ 內容可捲動 */
+      max-height: calc(100svh - 2rem);
       overflow:auto; -webkit-overflow-scrolling:touch;
     }
     .close{background:none;border:none;font-size:28px;cursor:pointer;line-height:1;}
@@ -82,7 +82,7 @@
     .row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;}
     .grid{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));}
 
-    /* ✅ 菜單卡片固定黑字、加白底提升對比 */
+    /* 菜單卡片固定黑字、加白底提升對比 */
     .menu-card{
       border:1px solid var(--glass-brd);
       border-radius:12px;
@@ -95,19 +95,38 @@
     .pill{display:inline-block;padding:.35rem .6rem;border-radius:999px;background:rgba(0,0,0,.06);font-size:.82rem;margin:.15rem .25rem 0 0;}
     .tag{font-size:.78rem;opacity:.9;}
 
-    /* ✅ Modal 內按鈕貼齊白框、不超出 */
+    /* Modal 內按鈕貼齊白框、不超出 */
     .modal-content .btn{ width:100%; max-width:100%; box-sizing:border-box; margin:.5rem 0; }
 
-    /* ✅ Modal 內所有表單/輔助字固定黑色 */
+    /* Modal 內所有表單/輔助字固定黑色 */
     .modal-content label,
     .modal-content input,
     .modal-content select,
     .modal-content .muted { color:#000; opacity:1; }
 
-    /* ✅ 電話連結維持繼承色，不顯示底線 */
+    /* 表單群組：標籤更清楚 */
+    .modal-content .row label {
+      display:flex; flex-direction:column; gap:6px; font-weight:600; color:#000;
+    }
+    /* 下拉與輸入：白底黑字、易讀 */
+    #dietSelect, #calTarget{
+      background:#fff !important; color:#000 !important;
+      border:1px solid #d0d5dd; border-radius:12px; padding:10px 12px;
+      line-height:1.2; box-shadow:0 1px 2px rgba(0,0,0,.06);
+      width:100%; max-width:14rem; -webkit-appearance:none; appearance:none;
+    }
+    #calTarget::placeholder{ color:#666; opacity:1; }
+    #dietSelect:focus, #calTarget:focus{
+      outline:none; box-shadow:0 0 0 3px rgba(0,123,255,.25); border-color:#80bfff;
+    }
+    @media (prefers-color-scheme: dark){
+      #dietSelect, #calTarget{ background:#fff !important; color:#000 !important; border-color:#c8ccd3; }
+    }
+
+    /* 電話連結維持繼承色，不顯示底線 */
     a[href^="tel"]{ color:inherit; text-decoration:none; }
 
-    /* ✅ 開啟 modal 時鎖住背景滾動 */
+    /* 開啟 modal 時鎖住背景滾動 */
     body.modal-open{ overflow:hidden; }
   </style>
 </head>
@@ -124,7 +143,7 @@
       少尉鍾俊佑 <a href="tel:0938000372">0938-000-372</a><br>
       上士李啟祥 <a href="tel:0955797745">0955-797-745</a>
     </p>
-    <!-- 預設自動：週三起算 7 天；若要手動，移除 data-auto 並把文字直接寫進去 -->
+    <!-- 預設自動：週二起算 7 天；若要手動，移除 data-auto 並把文字直接寫進去 -->
     <small class="muted" id="dutyWindow" data-auto="1" data-cycle="wed" data-length="7">
       值班時間：114年08月20日 ～ 114年08月27日
     </small>
@@ -146,7 +165,7 @@
 
     <div class="row" style="margin:.5rem 0 1rem;">
       <label>飲食偏好：
-        <select id="dietSelect" style="padding:.5rem;border-radius:8px;border:1px solid var(--glass-brd);">
+        <select id="dietSelect">
           <option value="all">不限制</option>
           <option value="veg">素食</option>
           <option value="hp">高蛋白</option>
@@ -155,8 +174,7 @@
       </label>
 
       <label>每天目標熱量(kcal)：
-        <input id="calTarget" type="number" min="800" max="4000" step="50" placeholder="例如 1800"
-          style="padding:.5rem;border-radius:8px;border:1px solid var(--glass-brd);width:9rem;">
+        <input id="calTarget" type="number" min="800" max="4000" step="50" placeholder="例如 1800">
       </label>
 
       <div class="row" style="flex:0 0 100%; gap:.5rem;">
@@ -181,12 +199,12 @@
 </footer>
 
 <script>
-/* ========== 背景：自動隨機主題（無按鈕） ========== */
+/* 背景：自動隨機主題 */
 const THEMES = [
-  {bg:'linear-gradient(135deg,#e7f0ff,#d7ecff)', anim:true},                        // 日間漸層
-  {bg:'linear-gradient(135deg,#0b2a4a,#124b86)', anim:false},                        // 軍藍
-  {bg:'linear-gradient(135deg,#ccd5c3,#9fb29a 45%, #7c8f7a)', anim:false},          // 叢林綠
-  {bg:'linear-gradient(135deg,#f5f8ff,#eaf1ff 60%,#ffffff)', anim:false}            // 極簡網格底色
+  {bg:'linear-gradient(135deg,#e7f0ff,#d7ecff)', anim:true},
+  {bg:'linear-gradient(135deg,#0b2a4a,#124b86)', anim:false},
+  {bg:'linear-gradient(135deg,#ccd5c3,#9fb29a 45%, #7c8f7a)', anim:false},
+  {bg:'linear-gradient(135deg,#f5f8ff,#eaf1ff 60%,#ffffff)', anim:false}
 ];
 (function setRandomTheme(){
   const t = THEMES[Math.floor(Math.random()*THEMES.length)];
@@ -194,119 +212,56 @@ const THEMES = [
   document.body.style.setProperty('--anim-duration', t.anim ? '30s':'0s');
 })();
 
-/* ========== 標語：七大分類，自動輪播（尊重減少動態） ========== */
+/* 標語：七大分類，自動輪播 */
 const slogans = {
-  diet: [
-    "三餐定時定量，少吃宵夜",
-    "少油少鹽少糖，多蔬果高纖維",
-    "多喝水，少喝含糖飲料",
-    "外食先看標示，熱量與鈉是關鍵",
-    "份量控制：拳頭澱粉、手掌蛋白",
-    "吃慢一點，每口嚼10～15下"
-  ],
-  sport: [
-    "每週至少運動150分鐘",
-    "重訓＋有氧雙軌並進，增肌減脂更有效",
-    "暖身10分鐘，降低運動傷害風險",
-    "公差返營也要動一動，保持戰備體能"
-  ],
-  sleep: [
-    "睡眠充足，精神百倍",
-    "固定上床與起床時間，幫助瘦素分泌",
-    "21點後減少咖啡因，有助入睡"
-  ],
-  mind: [
-    "壓力釋放，心理健康",
-    "寫下三件感謝的小事，穩定情緒",
-    "深呼吸 4-4-4-4，緩解焦慮"
-  ],
-  quit: [
-    "拒菸酒檳榔，健康一生",
-    "少喝酒：每週不超過2次、每次不超過2杯",
-    "戒菸三週見成效，體能更上層樓"
-  ],
-  hygiene: [
-    "飯前便後勤洗手，腸胃不鬧脾氣",
-    "餐具與水壺每日清洗，遠離細菌",
-    "流感季節記得接種疫苗"
-  ],
-  safety: [
-    "訓練先檢查場地與裝備，安全第一",
-    "行軍補水不停歇，每20分鐘100～200ml",
-    "烈日當頭補鹽分，避免熱傷害"
-  ],
+  diet: ["三餐定時定量，少吃宵夜","少油少鹽少糖，多蔬果高纖維","多喝水，少喝含糖飲料","外食先看標示，熱量與鈉是關鍵","份量控制：拳頭澱粉、手掌蛋白","吃慢一點，每口嚼10～15下"],
+  sport:["每週至少運動150分鐘","重訓＋有氧雙軌並進，增肌減脂更有效","暖身10分鐘，降低運動傷害風險","公差返營也要動一動，保持戰備體能"],
+  sleep:["睡眠充足，精神百倍","固定上床與起床時間，幫助瘦素分泌","21點後減少咖啡因，有助入睡"],
+  mind: ["壓力釋放，心理健康","寫下三件感謝的小事，穩定情緒","深呼吸 4-4-4-4，緩解焦慮"],
+  quit: ["拒菸酒檳榔，健康一生","少喝酒：每週不超過2次、每次不超過2杯","戒菸三週見成效，體能更上層樓"],
+  hygiene:["飯前便後勤洗手，腸胃不鬧脾氣","餐具與水壺每日清洗，遠離細菌","流感季節記得接種疫苗"],
+  safety:["訓練先檢查場地與裝備，安全第一","行軍補水不停歇，每20分鐘100～200ml","烈日當頭補鹽分，避免熱傷害"]
 };
 function buildSloganQueue(){
   const groups = Object.values(slogans);
   const bucket = [];
   const maxLen = Math.max(...groups.map(g=>g.length));
-  for (let i=0;i<maxLen;i++){
-    for (const g of groups){ if (g[i]) bucket.push(g[i]); }
-  }
-  for (let i=bucket.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [bucket[i], bucket[j]] = [bucket[j], bucket[i]];
-  }
+  for (let i=0;i<maxLen;i++){ for (const g of groups){ if (g[i]) bucket.push(g[i]); } }
+  for (let i=bucket.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [bucket[i],bucket[j]]=[bucket[j],bucket[i]]; }
   return bucket;
 }
 let sloganQueue = buildSloganQueue();
-function nextSlogan(){ if (!sloganQueue.length) sloganQueue = buildSloganQueue(); return sloganQueue.pop(); }
 const marqueeEl = document.getElementById('marquee');
+function nextSlogan(){ if (!sloganQueue.length) sloganQueue = buildSloganQueue(); return sloganQueue.pop(); }
 function setSloganText(){ marqueeEl.textContent = nextSlogan(); }
 setSloganText();
-if (!matchMedia('(prefers-reduced-motion: reduce)').matches){
-  setInterval(setSloganText, 40000);
-}
+if (!matchMedia('(prefers-reduced-motion: reduce)').matches){ setInterval(setSloganText, 40000); }
 
-/* ========== 菜單：偏好、抽籤/依星期、熱量差距、避免重複 ========== */
+/* 菜單資料 */
 const fmt = n => (n ?? 0).toLocaleString('zh-Hant-TW');
-
 const menus = [
-  // 週日
-  [
-    {meal:"早餐：燕麥＋水煮蛋＋無糖豆漿", kcal:350, p:24, c:40, f:10, tags:["hp"]},
+  [ {meal:"早餐：燕麥＋水煮蛋＋無糖豆漿", kcal:350, p:24, c:40, f:10, tags:["hp"]},
     {meal:"午餐：雞胸肉＋糙米＋燙青菜",   kcal:520, p:45, c:55, f:12, tags:["hp"]},
-    {meal:"晚餐：蔬菜湯＋豆腐＋水果",     kcal:300, p:18, c:35, f:8,  tags:["veg"]}
-  ],
-  // 週一
-  [
-    {meal:"早餐：全麥吐司＋低脂牛奶",     kcal:320, p:16, c:45, f:7,  tags:[]},
+    {meal:"晚餐：蔬菜湯＋豆腐＋水果",     kcal:300, p:18, c:35, f:8,  tags:["veg"]} ],
+  [ {meal:"早餐：全麥吐司＋低脂牛奶",     kcal:320, p:16, c:45, f:7,  tags:[]},
     {meal:"午餐：鮭魚＋糙米＋青花菜",     kcal:560, p:40, c:55, f:16, tags:["hp","lc"]},
-    {meal:"晚餐：蒸蛋＋炒菠菜＋水果",     kcal:330, p:22, c:25, f:12, tags:["lc"]}
-  ],
-  // 週二
-  [
-    {meal:"早餐：無糖優格＋堅果＋水果",   kcal:300, p:18, c:28, f:12, tags:["lc"]},
+    {meal:"晚餐：蒸蛋＋炒菠菜＋水果",     kcal:330, p:22, c:25, f:12, tags:["lc"]} ],
+  [ {meal:"早餐：無糖優格＋堅果＋水果",   kcal:300, p:18, c:28, f:12, tags:["lc"]},
     {meal:"午餐：雞腿排＋糙米＋時蔬",     kcal:540, p:42, c:55, f:15, tags:["hp"]},
-    {meal:"晚餐：豆漿＋雞胸沙拉",         kcal:290, p:30, c:16, f:8,  tags:["hp","lc"]}
-  ],
-  // 週三
-  [
-    {meal:"早餐：水煮蛋＋燕麥粥",         kcal:340, p:22, c:42, f:9,  tags:["hp"]},
+    {meal:"晚餐：豆漿＋雞胸沙拉",         kcal:290, p:30, c:16, f:8,  tags:["hp","lc"]} ],
+  [ {meal:"早餐：水煮蛋＋燕麥粥",         kcal:340, p:22, c:42, f:9,  tags:["hp"]},
     {meal:"午餐：牛肉片＋地瓜＋青菜",     kcal:560, p:38, c:55, f:16, tags:["hp"]},
-    {meal:"晚餐：味噌湯＋豆腐＋水果",     kcal:310, p:20, c:30, f:8,  tags:["veg","lc"]}
-  ],
-  // 週四
-  [
-    {meal:"早餐：全麥饅頭＋豆漿",         kcal:360, p:18, c:55, f:8,  tags:[]},
+    {meal:"晚餐：味噌湯＋豆腐＋水果",     kcal:310, p:20, c:30, f:8,  tags:["veg","lc"]} ],
+  [ {meal:"早餐：全麥饅頭＋豆漿",         kcal:360, p:18, c:55, f:8,  tags:[]},
     {meal:"午餐：菇菇時蔬炒麵＋水煮蛋",   kcal:520, p:24, c:75, f:12, tags:["veg"]},
-    {meal:"晚餐：蔬菜湯＋雞蛋＋水果",     kcal:290, p:16, c:28, f:9,  tags:["lc"]}
-  ],
-  // 週五
-  [
-    {meal:"早餐：水煮蛋＋黑咖啡＋水果",   kcal:260, p:16, c:24, f:8,  tags:["lc"]},
+    {meal:"晚餐：蔬菜湯＋雞蛋＋水果",     kcal:290, p:16, c:28, f:9,  tags:["lc"]} ],
+  [ {meal:"早餐：水煮蛋＋黑咖啡＋水果",   kcal:260, p:16, c:24, f:8,  tags:["lc"]},
     {meal:"午餐：鮭魚＋地瓜＋青菜",       kcal:540, p:38, c:48, f:16, tags:["hp","lc"]},
-    {meal:"晚餐：豆漿＋炒青菜",           kcal:270, p:16, c:20, f:9,  tags:["veg","lc"]}
-  ],
-  // 週六
-  [
-    {meal:"早餐：燕麥片＋堅果＋牛奶",     kcal:370, p:18, c:48, f:12, tags:[]},
+    {meal:"晚餐：豆漿＋炒青菜",           kcal:270, p:16, c:20, f:9,  tags:["veg","lc"]} ],
+  [ {meal:"早餐：燕麥片＋堅果＋牛奶",     kcal:370, p:18, c:48, f:12, tags:[]},
     {meal:"午餐：雞胸肉便當（半飯）＋時蔬",kcal:500, p:42, c:45, f:12, tags:["hp","lc"]},
-    {meal:"晚餐：蔬菜湯＋豆腐＋水果",     kcal:310, p:20, c:30, f:8,  tags:["veg","lc"]}
-  ]
+    {meal:"晚餐：蔬菜湯＋豆腐＋水果",     kcal:310, p:20, c:30, f:8,  tags:["veg","lc"]} ]
 ];
-
-// 額外隨機池，增加多樣性
 const randomPool = [
   {meal:"早餐：地瓜200g＋無糖優格",      kcal:320, p:14, c:55, f:6,  tags:["lc"]},
   {meal:"午餐：火雞胸沙拉＋玉米半根",    kcal:420, p:36, c:35, f:12, tags:["hp","lc"]},
@@ -318,7 +273,6 @@ const randomPool = [
 
 const $ = s=>document.querySelector(s);
 const clamp = (n,min,max)=> Math.max(min, Math.min(max, n));
-
 function filterByPref(items, pref){
   if (pref==='veg') return items.filter(i=>i.tags?.includes('veg'));
   if (pref==='hp')  return items.filter(i=>i.tags?.includes('hp'));
@@ -349,29 +303,44 @@ function renderMenuCards(list, pref, targetKcal, title){
   }
   $('#menuSummary').innerHTML = `<span class="pill">模式：${title}</span> <span class="pill">偏好：${prefText}</span> ${gap}`;
 }
+
+/* ---- 輔助：依餐別挑 1 個，若篩選後為空則回退到完整池 ---- */
+function pickOneByType(typeLabel, prefPool, fullPool){
+  const typeRE = new RegExp('^' + typeLabel); // ^早餐 / ^午餐 / ^晚餐
+  const fromPref = prefPool.filter(i => typeRE.test(i.meal));
+  if (fromPref.length) return fromPref[Math.floor(Math.random()*fromPref.length)];
+  const fromFull = fullPool.filter(i => typeRE.test(i.meal));
+  return fromFull[Math.floor(Math.random()*fromFull.length)];
+}
+
+/* 依星期（每餐 1 份；偏好不足回退） */
 function renderByWeek(pref='all', targetKcal=null){
   const idx = new Date().getDay();
-  const today = menus[idx].map(x=>({...x}));
-  const picked = filterByPref(today, pref);
-  const finalList = picked.length ? picked : today;
+  const todayFull = menus[idx].map(x=>({...x}));
+  const todayPref = filterByPref(todayFull, pref);
+  const b = pickOneByType('早餐', todayPref, todayFull);
+  const l = pickOneByType('午餐', todayPref, todayFull);
+  const d = pickOneByType('晚餐', todayPref, todayFull);
+  const finalList = [b,l,d].filter(Boolean);
   renderMenuCards(finalList, pref, targetKcal, "依星期菜單");
 }
+
+/* 抽籤（每餐 1 份；偏好不足回退；避免與上次完全相同） */
 let lastSig = localStorage.getItem('lastMenuSig') || '';
 function sig(list){ return list.map(i=>i.meal).join('|'); }
 function renderRandom(pref='all', targetKcal=null){
   const idx = new Date().getDay();
   const base = menus[idx].map(x=>({...x}));
   const pool = base.concat(randomPool);
-  const filtered = filterByPref(pool, pref);
-  const candidates = filtered.length ? filtered : pool;
+  const prefPool = filterByPref(pool, pref);
+  const fullPool = pool;
 
   let attempt = 0, list;
   do{
-    const breakfast = candidates.filter(i=>/早餐/.test(i.meal));
-    const lunch     = candidates.filter(i=>/午餐/.test(i.meal));
-    const dinner    = candidates.filter(i=>/晚餐/.test(i.meal));
-    const pick = arr => arr[Math.floor(Math.random()*arr.length)] || candidates[Math.floor(Math.random()*candidates.length)];
-    list = [pick(breakfast), pick(lunch), pick(dinner)];
+    const b = pickOneByType('早餐', prefPool, fullPool);
+    const l = pickOneByType('午餐', prefPool, fullPool);
+    const d = pickOneByType('晚餐', prefPool, fullPool);
+    list = [b,l,d].filter(Boolean);
     attempt++;
   } while(sig(list)===lastSig && attempt<8);
 
@@ -380,7 +349,7 @@ function renderRandom(pref='all', targetKcal=null){
   renderMenuCards(list, pref, targetKcal, "抽籤菜單");
 }
 
-/* ========== 值班時間：自動/手動雙模式 ========== */
+/* 值班時間：自動/手動雙模式 */
 (function renderDutyWindow(){
   const el = document.getElementById('dutyWindow');
   if (!el) return;
@@ -392,7 +361,6 @@ function renderRandom(pref='all', targetKcal=null){
   const parseRoc = s => { const m=/^(\d{2,3})-(\d{2})-(\d{2})$/.exec(s||''); if(!m) return null;
     const [_,Y,M,D]=m.map(Number); const dt=new Date(Y+1911,M-1,D,0,0,0,0); return Number.isFinite(dt.getTime())?dt:null; };
 
-  // ① 明確指定 data-start/end 或 data-start-roc/end-roc
   const startIso=el.dataset.start, endIso=el.dataset.end;
   const startRoc=el.dataset.startRoc, endRoc=el.dataset.endRoc;
   let start = startIso ? parseIso(startIso) : (startRoc ? parseRoc(startRoc) : null);
@@ -400,7 +368,6 @@ function renderRandom(pref='all', targetKcal=null){
 
   if (start && end){ el.textContent = `值班時間：${toRocStr(start)} ～ ${toRocStr(end)}`; return; }
 
-  // ② 自動模式 data-auto="1"
   if (el.dataset.auto === '1'){
     const map = {sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6};
     const cycleKey = (el.dataset.cycle || 'tue').toLowerCase();
@@ -413,12 +380,10 @@ function renderRandom(pref='all', targetKcal=null){
     const endAuto = new Date(startAuto); endAuto.setDate(startAuto.getDate() + length); endAuto.setHours(23,59,59,999);
 
     el.textContent = `值班時間：${toRocStr(startAuto)} ～ ${toRocStr(endAuto)}`;
-    return;
   }
-  // ③ 否則保留原字
 })();
 
-/* ========== Modal 控制（鎖住背景捲動） ========== */
+/* Modal 控制（鎖住背景捲動） */
 (function setupModal(){
   const openBtn = $('#menuBtn'); const modal = $('#menuModal'); const closeBtn = $('#closeMenu');
   function open(){ modal.setAttribute('open',''); document.body.classList.add('modal-open'); }
@@ -428,12 +393,9 @@ function renderRandom(pref='all', targetKcal=null){
   window.addEventListener('click', e=>{ if(e.target===modal) close(); });
 })();
 
-/* ========== 初始化 ========== */
+/* 初始化 */
 (function init(){
-  // 年度（民國）
   document.getElementById('rocYear').textContent = String(new Date().getFullYear() - 1911);
-
-  // 菜單互動
   document.getElementById('randBtn').addEventListener('click', ()=>{
     const pref = document.getElementById('dietSelect').value;
     const calT = parseInt(document.getElementById('calTarget').value || '0', 10);
@@ -446,8 +408,6 @@ function renderRandom(pref='all', targetKcal=null){
     const target = Number.isFinite(calT) ? clamp(calT, 800, 4000) : null;
     renderByWeek(pref, target);
   });
-
-  // 預設顯示「依星期菜單」
   renderByWeek('all', null);
 })();
 </script>
