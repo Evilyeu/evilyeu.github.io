@@ -47,11 +47,22 @@
     .primary{ background:linear-gradient(180deg, var(--btn-blue), #3a86e9); }
     .secondary{ background:linear-gradient(180deg, var(--btn-green), #1e8f54); }
     footer{ margin-top:auto; display:flex; justify-content:center; padding:16px; background:transparent; }
-    .footer-card{
-      background:#ffffff; border:1px solid rgba(0,0,0,.06);
-      border-radius:12px; padding:.6rem 1rem; font-size:.82rem; color:#475569;
-      box-shadow:0 2px 8px rgba(0,0,0,.05);
-    }
+    .footer-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  text-align: center;
+  color: #333;
+
+  position: fixed;      /* 🔹改這裡：固定定位 */
+  bottom: 8px;          /* 🔹離底部 8px，可以自行調整 */
+  left: 50%;            /* 🔹水平置中 */
+  transform: translateX(-50%); 
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);  /* 陰影可留可去 */
+  z-index: 1000;        /* 🔹確保不會被其他內容蓋掉 */
+}
     .modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
             padding:max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)) 12px; z-index:100; }
     .modal[open]{ display:block; }
