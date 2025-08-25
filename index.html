@@ -219,6 +219,167 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
   <script>
+// ===== 菜單資料池（含標籤：veg=素食、lc=低醣、hp=高蛋白） =====
+const breakfastPool = [
+  {name:"全麥吐司＋低脂牛奶", kcal:300, tags:[]},
+  {name:"燕麥＋水煮蛋＋無糖豆漿", kcal:350, tags:["hp","veg"]},
+  {name:"無糖優格＋堅果＋水果", kcal:300, tags:["veg","lc"]},
+  {name:"水煮蛋＋燕麥粥", kcal:340, tags:["hp"]},
+  {name:"全麥饅頭＋豆漿", kcal:360, tags:["veg"]},
+  {name:"水煮蛋＋黑咖啡＋水果", kcal:260, tags:["lc","hp"]},
+  {name:"燕麥片＋堅果＋牛奶", kcal:370, tags:[]},
+  {name:"豆漿＋地瓜＋時蔬", kcal:320, tags:["veg"]},
+  {name:"蔬菜蛋餅（少油）＋無糖茶", kcal:330, tags:["lc"]},
+  {name:"優格水果碗＋奇亞籽", kcal:310, tags:["veg","lc"]}
+];
+const lunchPool = [
+  {name:"雞胸肉＋糙米＋燙青菜", kcal:500, tags:["hp"]},
+  {name:"鮭魚＋糙米＋青花菜", kcal:560, tags:["hp","lc"]},
+  {name:"雞腿排＋糙米＋時蔬", kcal:540, tags:["hp"]},
+  {name:"牛肉片＋地瓜＋青菜", kcal:560, tags:["hp"]},
+  {name:"鮭魚＋地瓜＋青菜", kcal:540, tags:["hp","lc"]},
+  {name:"雞胸肉便當（半飯）＋時蔬", kcal:500, tags:["hp","lc"]},
+  {name:"菇菇時蔬炒麵＋水煮蛋", kcal:520, tags:["veg"]},
+  {name:"豆腐時蔬蓋飯（半飯）", kcal:480, tags:["veg","lc"]},
+  {name:"蒜香杏鮑菇＋藜麥沙拉", kcal:450, tags:["veg","lc"]},
+  {name:"日式豆腐鍋＋蔬菜＋少量白飯", kcal:520, tags:["veg"]}
+];
+const dinnerPool = [
+  {name:"蔬菜湯＋豆腐＋水果", kcal:300, tags:["veg","lc"]},
+  {name:"蒸蛋＋炒菠菜＋水果", kcal:320, tags:["veg","lc"]},
+  {name:"豆漿＋雞胸沙拉", kcal:290, tags:["lc"]},
+  {name:"味噌湯＋豆腐＋水果", kcal:310, tags:["veg","lc"]},
+  {name:"蔬菜湯＋雞蛋＋水果", kcal:290, tags:["veg","lc"]},
+  {name:"豆漿＋炒青菜", kcal:270, tags:["veg","lc"]},
+  {name:"蒸鱸魚＋花椰菜＋山藥", kcal:340, tags:["hp","lc"]},
+  {name:"番茄豆腐鍋＋時蔬", kcal:320, tags:["veg"]},
+  {name:"玉米筍炒菇＋涼拌豆干", kcal:300, tags:["veg","lc"]},
+  {name:"烤雞腿＋沙拉（無醬）", kcal:330, tags:["hp","lc"]}
+];
+
+// ===== 依星期的預設菜單（0=週日…6=週六） =====
+const menusByWeek = [
+  [{t:"早餐", name:"全麥吐司＋低脂牛奶", kcal:300, tags:[]},
+   {t:"午餐", name:"鮭魚＋糙米＋青花菜", kcal:560, tags:["hp","lc"]},
+   {t:"晚餐", name:"蔬菜湯＋豆腐＋水果", kcal:300, tags:["veg","lc"]}],
+  [{t:"早餐", name:"燕麥＋水煮蛋＋無糖豆漿", kcal:350, tags:["hp","veg"]},
+   {t:"午餐", name:"雞胸肉＋糙米＋燙青菜", kcal:500, tags:["hp"]},
+   {t:"晚餐", name:"蒸蛋＋炒菠菜＋水果", kcal:320, tags:["veg","lc"]}],
+  [{t:"早餐", name:"無糖優格＋堅果＋水果", kcal:300, tags:["veg","lc"]},
+   {t:"午餐", name:"雞腿排＋糙米＋時蔬", kcal:540, tags:["hp"]},
+   {t:"晚餐", name:"豆漿＋雞胸沙拉", kcal:290, tags:["lc"]}],
+  [{t:"早餐", name:"水煮蛋＋燕麥粥", kcal:340, tags:["hp"]},
+   {t:"午餐", name:"牛肉片＋地瓜＋青菜", kcal:560, tags:["hp"]},
+   {t:"晚餐", name:"味噌湯＋豆腐＋水果", kcal:310, tags:["veg","lc"]}],
+  [{t:"早餐", name:"全麥饅頭＋豆漿", kcal:360, tags:["veg"]},
+   {t:"午餐", name:"菇菇時蔬炒麵＋水煮蛋", kcal:520, tags:["veg"]},
+   {t:"晚餐", name:"蔬菜湯＋雞蛋＋水果", kcal:290, tags:["veg","lc"]}],
+  [{t:"早餐", name:"水煮蛋＋黑咖啡＋水果", kcal:260, tags:["lc","hp"]},
+   {t:"午餐", name:"鮭魚＋地瓜＋青菜", kcal:540, tags:["hp","lc"]},
+   {t:"晚餐", name:"豆漿＋炒青菜", kcal:270, tags:["veg","lc"]}],
+  [{t:"早餐", name:"燕麥片＋堅果＋牛奶", kcal:370, tags:[]},
+   {t:"午餐", name:"雞胸肉便當（半飯）＋時蔬", kcal:500, tags:["hp","lc"]},
+   {t:"晚餐", name:"番茄豆腐鍋＋時蔬", kcal:320, tags:["veg"]}]
+];
+
+// ===== 工具 =====
+function shuffle(a){ const b=[...a]; for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]];} return b; }
+function pickFromPool(pool, filterTag, need=1){
+  const list = filterTag ? pool.filter(x => (x.tags||[]).includes(filterTag)) : pool.slice();
+  return shuffle(list).slice(0, need);
+}
+function currentDayList(){ return menusByWeek[new Date().getDay()]; }
+
+// ===== 偏好邏輯（veg 嚴格 / hp 高蛋白 / lc 低醣） =====
+function buildByPreference(pref){
+  const warn = document.getElementById('warn');
+  warn.style.display = 'none';
+
+  if (pref === 'veg') {
+    const b = pickFromPool(breakfastPool, 'veg', 1);
+    const l = pickFromPool(lunchPool, 'veg', 1);
+    const d = pickFromPool(dinnerPool, 'veg', 1);
+    const chosen = [
+      {t:"早餐", ...(b[0]||{name:"（缺項）",kcal:0,tags:["veg"]})},
+      {t:"午餐", ...(l[0]||{name:"（缺項）",kcal:0,tags:["veg"]})},
+      {t:"晚餐", ...(d[0]||{name:"（缺項）",kcal:0,tags:["veg"]})}
+    ];
+    if(!b.length || !l.length || !d.length){
+      warn.textContent = "⚠️ 素食嚴格模式下，今日菜單池不足，請手動補齊或調整偏好。";
+      warn.style.display = 'block';
+    }
+    return chosen;
+  }
+
+  const tag = (pref==='hp' || pref==='lc') ? pref : null;
+  const pickOrFallback = (pool)=>{
+    const primary = pickFromPool(pool, tag, 1);
+    if(primary.length) return primary[0];
+    return shuffle(pool)[0];
+  };
+  return [
+    {t:"早餐", ...pickOrFallback(breakfastPool)},
+    {t:"午餐", ...pickOrFallback(lunchPool)},
+    {t:"晚餐", ...pickOrFallback(dinnerPool)}
+  ];
+}
+
+// ===== 顯示（含目標熱量差距、標籤膠囊） =====
+function render(list){
+  const badgeClass = t => t==="早餐"?"b":(t==="午餐"?"l":"d");
+  document.getElementById("menuList").innerHTML = list.map(i=>`
+    <article class="menu">
+      <span class="badge ${badgeClass(i.t)}">${i.t}</span>
+      <h3>${i.name}</h3>
+      <p class="meta">熱量：約 ${i.kcal} kcal ${(i.tags||[]).map(tag=>`<span class="pill">${tag}</span>`).join("")}</p>
+      <p class="note">建議：餐盤 1/2 蔬菜、1/4 蛋白、1/4 全穀；外食可減飯半碗或去皮。</p>
+    </article>
+  `).join("");
+
+  const total = list.reduce((a,b)=>a+(b.kcal||0),0);
+  const target = parseInt(document.getElementById('calTarget').value||"0",10);
+  const delta = target? `（與目標差距：約 ${Math.abs(total-target)} kcal ${total>target?"可減少":"可加餐"}）` : "";
+  document.getElementById("calories").textContent = `每日總熱量：約 ${total} kcal ${delta}`;
+}
+
+// ===== 依星期（週表）但支援 veg 嚴格替換 =====
+function renderByWeekWithPreference(){
+  const pref = document.getElementById('dietSelect').value;
+  if (pref !== 'veg') { document.getElementById('warn').style.display='none'; return render(currentDayList()); }
+
+  const source = currentDayList();
+  const replaced = source.map(item=>{
+    if((item.tags||[]).includes('veg')) return item;
+    const pool = item.t==="早餐" ? breakfastPool : (item.t==="午餐" ? lunchPool : dinnerPool);
+    const alt = pool.filter(x=> (x.tags||[]).includes('veg'));
+    return {t:item.t, ...(alt.length? alt[Math.floor(Math.random()*alt.length)] : {name:"（缺項）",kcal:0,tags:["veg"]})};
+  });
+  const warn = document.getElementById('warn');
+  if(replaced.some(x=>x.name==="（缺項）")){
+    warn.textContent = "⚠️ 素食嚴格模式下，依星期菜單含有缺項，請手動補齊或改用抽籤。";
+    warn.style.display = 'block';
+  }else{
+    warn.style.display = 'none';
+  }
+  render(replaced);
+}
+
+// ===== 事件：開啟 modal 時預先載入「依星期」菜單 =====
+document.getElementById('menuBtn').addEventListener('click', ()=>{
+  document.getElementById('warn').style.display='none';
+  renderByWeekWithPreference();
+});
+
+// ===== 事件：隨機菜單（依偏好抽） =====
+document.getElementById('randBtn').addEventListener('click', ()=>{
+  const pref = document.getElementById('dietSelect').value;
+  render(buildByPreference(pref));
+});
+
+// ===== 事件：依星期菜單（遇 veg 嚴格會替換） =====
+document.getElementById('byWeekBtn').addEventListener('click', renderByWeekWithPreference);
+</script>
+  <script>
   // === 今日建議菜單 modal 開關 ===
   const modal    = document.getElementById('menuModal');
   const openBtn  = document.getElementById('menuBtn');
