@@ -218,5 +218,27 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
+  <script>
+  // === 今日建議菜單 modal 開關 ===
+  const modal    = document.getElementById('menuModal');
+  const openBtn  = document.getElementById('menuBtn');
+  const closeBtn = document.getElementById('closeMenu');
+
+  function openModal() {
+    modal.setAttribute('open', '');
+    document.body.style.overflow = 'hidden';   // 鎖背景卷動
+  }
+  function closeModal() {
+    modal.removeAttribute('open');
+    document.body.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  // 點遮罩關閉
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  // ESC 關閉（可選）
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+</script>
 </body>
 </html>
