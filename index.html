@@ -179,5 +179,14 @@ document.getElementById('marquee').textContent=slogans[Math.floor(Math.random()*
   el.textContent=`值班時間：${toRoc(s)} ～ ${toRoc(e)}`;}
  document.getElementById('rocYear').textContent=String(new Date().getFullYear()-1911);})();
 </script>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  // 讓所有卡片依序淡入顯示（值班人員 + 今日小挑戰）
+  const cards = document.querySelectorAll('.card');
+  cards.forEach((el, i) => {
+    setTimeout(() => el.classList.add('show'), 80 + i * 60);
+  });
+});
+</script>
 </body>
 </html>
