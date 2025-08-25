@@ -80,6 +80,18 @@
     .modal-actions .btn{ flex:1; margin:0; min-width:0; padding:.95rem; border-radius:20px; }
     .grid{ display:grid; gap:.85rem; grid-template-columns:1fr; }
     .menu{ border:1px solid #e5e7eb; border-radius:16px; padding:1rem; background:#fff; color:#000; }
+    /* 菜單卡片淡入動畫 */
+@media (prefers-reduced-motion: no-preference){
+  .menu {
+    opacity:0;
+    transform:translateY(6px);
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  .menu.show {
+    opacity:1;
+    transform:none;
+  }
+}
     .menu h3{ margin:.2rem 0 .5rem; font-size:1.15rem; font-weight:900; }
     .meta{ font-size:.95rem; color:#334155; }
     .pill{ display:inline-block; padding:.32rem .6rem; margin-right:.35rem; border-radius:999px;
@@ -255,6 +267,11 @@ function render(list){
   const target=parseInt(document.getElementById('calTarget').value||"0",10);
   const delta=target?`（與目標差距：約 ${Math.abs(total-target)} kcal ${total>target?"可減少":"可加餐"}）`:"";
   document.getElementById("calories").textContent=`每日總熱量：約 ${total} kcal ${delta}`;
+    // 逐一淡入顯示菜單卡片
+  const items = document.querySelectorAll('#menuList .menu');
+  items.forEach((el, i) => {
+    setTimeout(() => el.classList.add('show'), 60 * i);
+  });
 }
 
 // 依星期 + 素食替換
